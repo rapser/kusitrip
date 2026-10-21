@@ -4,6 +4,7 @@ import SwiftData
 struct HomeView: View {
     @State private var viewModel = HomeViewModel()
     @Query private var favorites: [FavoriteModel]
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -140,8 +141,9 @@ struct HomeView: View {
                             ActivityCard(
                                 activity: activity,
                                 isFavorited: favorites.contains(where: { $0.activityId == activity.id }),
-                                onFavorite: { id in
-                                    Task { await EventBus.shared.send(.favoriteToggled(activityId: id, isFavorite: true)) }
+                                onFavorite: { _ in
+                                    let isFavorite = modelContext.toggleFavorite(activity)
+                                    Task { await EventBus.shared.send(.favoriteToggled(activityId: activity.id, isFavorite: isFavorite)) }
                                 }
                             )
                         }

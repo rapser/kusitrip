@@ -252,7 +252,11 @@ struct ActivityDetailView: View {
                     LazyHStack(spacing: 12) {
                         ForEach(viewModel.relatedActivities) { related in
                             NavigationLink(value: AppRoute.activityDetail(id: related.id)) {
-                                ActivityCard(activity: related, onFavorite: { _ in })
+                                ActivityCard(
+                                    activity: related,
+                                    isFavorited: favorites.contains(where: { $0.activityId == related.id }),
+                                    onFavorite: { _ in toggleFavorite(related) }
+                                )
                             }
                             .buttonStyle(.plain)
                         }
@@ -287,19 +291,9 @@ struct ActivityDetailView: View {
 
     // MARK: - Toggle favorite
     private func toggleFavorite(_ activity: ActivityUI) {
-        if let existing = favorites.first(where: { $0.activityId == activityId }) {
-            modelContext.delete(existing)
-        } else {
-            let model = FavoriteModel(
-                activityId: activityId,
-                activityTitle: activity.title,
-                activityImageURL: activity.primaryImageURL,
-                activityPrice: activity.formattedPrice
-            )
-            modelContext.insert(model)
-        }
+        let isFavorite = modelContext.toggleFavorite(activity)
         Task {
-            await EventBus.shared.send(.favoriteToggled(activityId: activityId, isFavorite: !isFavorited))
+            await EventBus.shared.send(.favoriteToggled(activityId: activity.id, isFavorite: isFavorite))
         }
     }
 }
