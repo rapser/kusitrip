@@ -8,7 +8,7 @@ struct PriceTagView: View {
             Text("¡Gratis!")
                 .font(.title3)
                 .fontWeight(.bold)
-                .foregroundStyle(Color.civPrimary)
+                .foregroundStyle(Color.kusiTextPrimary)
         } else {
             VStack(alignment: .leading, spacing: 2) {
                 if let original = activity.formattedOriginalPrice,
@@ -16,26 +16,26 @@ struct PriceTagView: View {
                     HStack(spacing: 6) {
                         Text(original)
                             .font(.footnote)
-                            .foregroundStyle(Color.civTextSecondary)
-                            .strikethrough(color: Color.civTextSecondary)
+                            .foregroundStyle(Color.kusiTextSecondary)
+                            .strikethrough(color: Color.kusiTextSecondary)
                         Text("-\(pct)%")
                             .font(.caption2)
                             .fontWeight(.bold)
                             .foregroundStyle(.white)
                             .padding(.horizontal, 5)
                             .padding(.vertical, 2)
-                            .background(Color.civDiscountRed)
+                            .background(Color.kusiDiscountRed)
                             .clipShape(RoundedRectangle(cornerRadius: 3))
                     }
                 }
                 HStack(alignment: .firstTextBaseline, spacing: 4) {
                     Text("desde")
                         .font(.caption)
-                        .foregroundStyle(Color.civTextSecondary)
+                        .foregroundStyle(Color.kusiTextSecondary)
                     Text(activity.formattedPrice)
                         .font(.headline)
                         .fontWeight(.bold)
-                        .foregroundStyle(Color.civTextPrimary)
+                        .foregroundStyle(Color.kusiTextPrimary)
                 }
             }
         }

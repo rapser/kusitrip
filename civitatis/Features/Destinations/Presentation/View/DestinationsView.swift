@@ -17,10 +17,10 @@ struct DestinationsView: View {
                             .fontWeight(viewModel.selectedContinent == continent ? .semibold : .regular)
                             .padding(.horizontal, 16)
                             .padding(.vertical, 8)
-                            .background(viewModel.selectedContinent == continent ? Color.civPrimary : Color.civSurface)
-                            .foregroundStyle(viewModel.selectedContinent == continent ? .white : Color.civTextPrimary)
+                            .background(viewModel.selectedContinent == continent ? Color.kusiPrimary : Color.kusiSurface)
+                            .foregroundStyle(viewModel.selectedContinent == continent ? .white : Color.kusiTextPrimary)
                             .clipShape(Capsule())
-                            .overlay(Capsule().stroke(viewModel.selectedContinent == continent ? Color.civPrimary : Color.civBorder))
+                            .overlay(Capsule().stroke(viewModel.selectedContinent == continent ? Color.kusiPrimary : Color.kusiBorder))
                         }
                     }
                     .padding(.horizontal, 16)
@@ -30,7 +30,7 @@ struct DestinationsView: View {
                 if viewModel.isLoading {
                     ProgressView()
                         .scaleEffect(1.4)
-                        .tint(Color.civPrimary)
+                        .tint(Color.kusiPrimary)
                         .frame(maxWidth: .infinity)
                         .padding(.top, 60)
                 } else if viewModel.filteredDestinations.isEmpty {
@@ -41,7 +41,7 @@ struct DestinationsView: View {
                 }
             }
         }
-        .background(Color.civBackground)
+        .background(Color.kusiBackground)
         .navigationTitle("Destinos")
         .navigationBarTitleDisplayMode(.large)
         .searchable(text: $viewModel.searchText, prompt: "Buscar destinos o países")
@@ -51,7 +51,7 @@ struct DestinationsView: View {
     private var destinationCount: some View {
         Text("\(viewModel.filteredDestinations.count) destinos disponibles")
             .font(.caption)
-            .foregroundStyle(Color.civTextSecondary)
+            .foregroundStyle(Color.kusiTextSecondary)
             .padding(.horizontal, 16)
             .padding(.bottom, 8)
     }
@@ -76,13 +76,13 @@ struct DestinationsView: View {
         VStack(spacing: 16) {
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 48))
-                .foregroundStyle(Color.civBorder)
+                .foregroundStyle(Color.kusiBorder)
             Text("No se encontraron destinos")
                 .font(.headline)
-                .foregroundStyle(Color.civTextSecondary)
+                .foregroundStyle(Color.kusiTextSecondary)
             Text("Prueba con otro término de búsqueda o continente.")
                 .font(.subheadline)
-                .foregroundStyle(Color.civTextSecondary)
+                .foregroundStyle(Color.kusiTextSecondary)
                 .multilineTextAlignment(.center)
         }
         .padding(40)
@@ -101,7 +101,7 @@ private struct DestinationGridCard: View {
                 case .success(let image):
                     image.resizable().aspectRatio(contentMode: .fill)
                 default:
-                    Color.civBorder.overlay(ProgressView().tint(Color.civPrimary))
+                    Color.kusiBorder.overlay(ProgressView().tint(Color.kusiPrimary))
                 }
             }
             .frame(height: 180)

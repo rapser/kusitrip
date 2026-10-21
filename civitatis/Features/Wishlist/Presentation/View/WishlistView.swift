@@ -13,7 +13,7 @@ struct WishlistView: View {
                 favoritesList
             }
         }
-        .background(Color.civBackground)
+        .background(Color.kusiBackground)
         .navigationTitle("Favoritos")
         .navigationBarTitleDisplayMode(.large)
     }
@@ -24,14 +24,14 @@ struct WishlistView: View {
             Spacer()
             Image(systemName: "heart.slash")
                 .font(.system(size: 64))
-                .foregroundStyle(Color.civBorder)
+                .foregroundStyle(Color.kusiBorder)
             Text("Aún no tienes favoritos")
                 .font(.title3)
                 .fontWeight(.bold)
-                .foregroundStyle(Color.civTextPrimary)
+                .foregroundStyle(Color.kusiTextPrimary)
             Text("Guarda tus actividades favoritas tocando el corazón para encontrarlas fácilmente.")
                 .font(.subheadline)
-                .foregroundStyle(Color.civTextSecondary)
+                .foregroundStyle(Color.kusiTextSecondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
             NavigationLink(value: AppRoute.destinationDetail(id: "")) {
@@ -39,7 +39,7 @@ struct WishlistView: View {
                     .fontWeight(.semibold)
                     .padding(.horizontal, 24)
                     .padding(.vertical, 14)
-                    .background(Color.civPrimary)
+                    .background(Color.kusiPrimary)
                     .foregroundStyle(.white)
                     .clipShape(Capsule())
             }
@@ -55,7 +55,7 @@ struct WishlistView: View {
             LazyVStack(spacing: 12) {
                 Text("\(favorites.count) actividad\(favorites.count != 1 ? "es" : "") guardada\(favorites.count != 1 ? "s" : "")")
                     .font(.caption)
-                    .foregroundStyle(Color.civTextSecondary)
+                    .foregroundStyle(Color.kusiTextSecondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 16)
                     .padding(.top, 8)
@@ -85,7 +85,7 @@ private struct FavoriteRowCard: View {
             AsyncImage(url: URL(string: favorite.activityImageURL)) { phase in
                 switch phase {
                 case .success(let image): image.resizable().aspectRatio(contentMode: .fill)
-                default: Color.civBorder.overlay(ProgressView().tint(Color.civPrimary))
+                default: Color.kusiBorder.overlay(ProgressView().tint(Color.kusiPrimary))
                 }
             }
             .frame(width: 88, height: 80)
@@ -96,17 +96,17 @@ private struct FavoriteRowCard: View {
                 Text(favorite.activityTitle)
                     .font(.subheadline)
                     .fontWeight(.semibold)
-                    .foregroundStyle(Color.civTextPrimary)
+                    .foregroundStyle(Color.kusiTextPrimary)
                     .lineLimit(2)
 
                 Text(favorite.activityPrice)
                     .font(.subheadline)
                     .fontWeight(.bold)
-                    .foregroundStyle(Color.civPrimary)
+                    .foregroundStyle(Color.kusiPrimary)
 
                 Text("Guardado el \(favorite.savedAt.formatted(date: .abbreviated, time: .omitted))")
                     .font(.caption2)
-                    .foregroundStyle(Color.civTextSecondary)
+                    .foregroundStyle(Color.kusiTextSecondary)
             }
             Spacer()
 
@@ -115,7 +115,7 @@ private struct FavoriteRowCard: View {
             } label: {
                 Image(systemName: "heart.fill")
                     .font(.title3)
-                    .foregroundStyle(Color.civDiscountRed)
+                    .foregroundStyle(Color.kusiDiscountRed)
             }
         }
         .padding(12)

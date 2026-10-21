@@ -10,7 +10,7 @@ struct StarRatingView: View {
             ForEach(1...5, id: \.self) { index in
                 Image(systemName: starName(for: index))
                     .font(.system(size: 11))
-                    .foregroundStyle(Color.civRatingGold)
+                    .foregroundStyle(Color.kusiRatingGold)
             }
         }
     }

@@ -16,10 +16,10 @@ struct CategoryChipView: View {
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 10)
-            .background(isSelected ? Color.civPrimary : Color.civSurface)
-            .foregroundStyle(isSelected ? Color.white : Color.civTextPrimary)
+            .background(isSelected ? Color.kusiPrimary : Color.kusiSurface)
+            .foregroundStyle(Color.kusiTextPrimary)
             .clipShape(Capsule())
-            .overlay(Capsule().stroke(isSelected ? Color.civPrimary : Color.civBorder, lineWidth: 1))
+            .overlay(Capsule().stroke(isSelected ? Color.kusiPrimary : Color.kusiBorder, lineWidth: 1))
         }
         .buttonStyle(.plain)
     }

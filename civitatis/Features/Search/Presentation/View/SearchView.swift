@@ -15,7 +15,7 @@ struct SearchView: View {
                 }
             }
         }
-        .background(Color.civBackground)
+        .background(Color.kusiBackground)
         .navigationTitle("Buscar")
         .navigationBarTitleDisplayMode(.large)
         .searchable(text: $viewModel.searchText, prompt: "Destinos, actividades, tours...")
@@ -26,7 +26,7 @@ struct SearchView: View {
         VStack(alignment: .leading, spacing: 20) {
             Text("Búsquedas populares")
                 .font(.headline)
-                .foregroundStyle(Color.civTextPrimary)
+                .foregroundStyle(Color.kusiTextPrimary)
                 .padding(.horizontal, 16)
                 .padding(.top, 16)
 
@@ -40,12 +40,12 @@ struct SearchView: View {
                     } label: {
                         Text(suggestion)
                             .font(.subheadline)
-                            .foregroundStyle(Color.civTextPrimary)
+                            .foregroundStyle(Color.kusiTextPrimary)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 10)
-                            .background(Color.civSurface)
+                            .background(Color.kusiSurface)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.civBorder))
+                            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.kusiBorder))
                     }
                     .buttonStyle(.plain)
                 }
@@ -54,7 +54,7 @@ struct SearchView: View {
 
             Text("Destinos destacados")
                 .font(.headline)
-                .foregroundStyle(Color.civTextPrimary)
+                .foregroundStyle(Color.kusiTextPrimary)
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
 
@@ -78,10 +78,10 @@ struct SearchView: View {
     private var searchingIndicator: some View {
         HStack {
             ProgressView()
-                .tint(Color.civPrimary)
+                .tint(Color.kusiPrimary)
             Text("Buscando \"\(viewModel.searchText)\"…")
                 .font(.subheadline)
-                .foregroundStyle(Color.civTextSecondary)
+                .foregroundStyle(Color.kusiTextSecondary)
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 40)
@@ -93,13 +93,13 @@ struct SearchView: View {
             let total = viewModel.resultActivities.count + viewModel.resultDestinations.count
             Text(total == 0 ? "Sin resultados para \"\(viewModel.searchText)\"" : "\(total) resultados para \"\(viewModel.searchText)\"")
                 .font(.subheadline)
-                .foregroundStyle(Color.civTextSecondary)
+                .foregroundStyle(Color.kusiTextSecondary)
                 .padding(16)
 
             if !viewModel.resultDestinations.isEmpty {
                 Text("Destinos")
                     .font(.headline)
-                    .foregroundStyle(Color.civTextPrimary)
+                    .foregroundStyle(Color.kusiTextPrimary)
                     .padding(.horizontal, 16)
                     .padding(.bottom, 8)
 
@@ -120,7 +120,7 @@ struct SearchView: View {
             if !viewModel.resultActivities.isEmpty {
                 Text("Actividades")
                     .font(.headline)
-                    .foregroundStyle(Color.civTextPrimary)
+                    .foregroundStyle(Color.kusiTextPrimary)
                     .padding(.horizontal, 16)
                     .padding(.bottom, 8)
 
@@ -140,10 +140,10 @@ struct SearchView: View {
                 VStack(spacing: 16) {
                     Image(systemName: "magnifyingglass")
                         .font(.system(size: 48))
-                        .foregroundStyle(Color.civBorder)
+                        .foregroundStyle(Color.kusiBorder)
                     Text("Prueba con otros términos como\n\"Roma\", \"free tour\" o \"Barcelona\"")
                         .font(.subheadline)
-                        .foregroundStyle(Color.civTextSecondary)
+                        .foregroundStyle(Color.kusiTextSecondary)
                         .multilineTextAlignment(.center)
                 }
                 .frame(maxWidth: .infinity)
@@ -157,7 +157,7 @@ struct SearchView: View {
             AsyncImage(url: URL(string: activity.primaryImageURL)) { phase in
                 switch phase {
                 case .success(let image): image.resizable().aspectRatio(contentMode: .fill)
-                default: Color.civBorder
+                default: Color.kusiBorder
                 }
             }
             .frame(width: 80, height: 70)
@@ -168,7 +168,7 @@ struct SearchView: View {
                 Text(activity.title)
                     .font(.subheadline)
                     .fontWeight(.semibold)
-                    .foregroundStyle(Color.civTextPrimary)
+                    .foregroundStyle(Color.kusiTextPrimary)
                     .lineLimit(2)
                 HStack(spacing: 4) {
                     StarRatingView(rating: activity.ratingValue)
@@ -176,20 +176,20 @@ struct SearchView: View {
                         .font(.caption)
                         .fontWeight(.bold)
                     Text("·")
-                        .foregroundStyle(Color.civBorder)
+                        .foregroundStyle(Color.kusiBorder)
                     Text(activity.durationText)
                         .font(.caption)
-                        .foregroundStyle(Color.civTextSecondary)
+                        .foregroundStyle(Color.kusiTextSecondary)
                 }
                 Text(activity.isFree ? "¡Gratis!" : "desde \(activity.formattedPrice)")
                     .font(.subheadline)
                     .fontWeight(.bold)
-                    .foregroundStyle(activity.isFree ? Color.civPrimary : Color.civTextPrimary)
+                    .foregroundStyle(activity.isFree ? Color.kusiPrimary : Color.kusiTextPrimary)
             }
             Spacer()
             Image(systemName: "chevron.right")
                 .font(.caption)
-                .foregroundStyle(Color.civBorder)
+                .foregroundStyle(Color.kusiBorder)
         }
         .padding(12)
         .civCard()

@@ -15,14 +15,14 @@ struct ProfileView: View {
                         Text(viewModel.currentUser?.fullName ?? "Viajero")
                             .font(.title3)
                             .fontWeight(.bold)
-                            .foregroundStyle(Color.civTextPrimary)
+                            .foregroundStyle(Color.kusiTextPrimary)
                         Text(viewModel.currentUser?.email ?? "")
                             .font(.subheadline)
-                            .foregroundStyle(Color.civTextSecondary)
+                            .foregroundStyle(Color.kusiTextSecondary)
                         if let since = viewModel.currentUser?.memberSince {
                             Text("Miembro desde \(since)")
                                 .font(.caption)
-                                .foregroundStyle(Color.civTextSecondary)
+                                .foregroundStyle(Color.kusiTextSecondary)
                         }
                     }
                 }
@@ -31,11 +31,11 @@ struct ProfileView: View {
 
             // Stats
             Section("Mis viajes") {
-                statRow(icon: "heart.fill", color: Color.civDiscountRed,
+                statRow(icon: "heart.fill", color: Color.kusiDiscountRed,
                         title: "Favoritos", value: "Ver lista")
-                statRow(icon: "ticket.fill", color: Color.civPrimary,
+                statRow(icon: "ticket.fill", color: Color.kusiPrimary,
                         title: "Reservas", value: "Ver historial")
-                statRow(icon: "star.fill", color: Color.civRatingGold,
+                statRow(icon: "star.fill", color: Color.kusiRatingGold,
                         title: "Mis valoraciones", value: "Ver todas")
             }
 
@@ -50,7 +50,7 @@ struct ProfileView: View {
             // Help
             Section("Ayuda") {
                 settingsRow(icon: "questionmark.circle", title: "Centro de ayuda")
-                settingsRow(icon: "phone", title: "Contactar Civitatis")
+                settingsRow(icon: "phone", title: "Contactar Kusi Trip")
                 settingsRow(icon: "doc.text", title: "Condiciones generales")
                 settingsRow(icon: "hand.raised", title: "Política de privacidad")
             }
@@ -59,19 +59,19 @@ struct ProfileView: View {
             Section {
                 HStack {
                     Label("Versión de la app", systemImage: "info.circle")
-                        .foregroundStyle(Color.civTextSecondary)
+                        .foregroundStyle(Color.kusiTextSecondary)
                     Spacer()
                     Text("1.0.0")
                         .font(.footnote)
-                        .foregroundStyle(Color.civTextSecondary)
+                        .foregroundStyle(Color.kusiTextSecondary)
                 }
                 HStack {
                     Label("Valoración", systemImage: "star.circle")
-                        .foregroundStyle(Color.civTextSecondary)
+                        .foregroundStyle(Color.kusiTextSecondary)
                     Spacer()
                     Text("9.1 / 10")
                         .font(.footnote)
-                        .foregroundStyle(Color.civTextSecondary)
+                        .foregroundStyle(Color.kusiTextSecondary)
                 }
             }
 
@@ -88,10 +88,10 @@ struct ProfileView: View {
             }
         }
         .listStyle(.insetGrouped)
-        .background(Color.civBackground)
+        .background(Color.kusiBackground)
         .navigationTitle("Mi perfil")
         .navigationBarTitleDisplayMode(.large)
-        .tint(Color.civPrimary)
+        .tint(Color.kusiPrimary)
         .onAppear { viewModel.setup(user: coordinator.currentUser) }
         .alert("¿Cerrar sesión?", isPresented: $showLogoutAlert) {
             Button("Cancelar", role: .cancel) {}
@@ -109,7 +109,7 @@ struct ProfileView: View {
             Circle()
                 .fill(
                     LinearGradient(
-                        colors: [Color.civPrimary, Color.civPrimaryDark],
+                        colors: [Color.kusiPrimary, Color.kusiAccent],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )
@@ -126,25 +126,25 @@ struct ProfileView: View {
     private func statRow(icon: String, color: Color, title: String, value: String) -> some View {
         HStack {
             Label(title, systemImage: icon)
-                .foregroundStyle(Color.civTextPrimary)
+                .foregroundStyle(Color.kusiTextPrimary)
             Spacer()
             Text(value)
                 .font(.subheadline)
-                .foregroundStyle(Color.civTextSecondary)
+                .foregroundStyle(Color.kusiTextSecondary)
             Image(systemName: "chevron.right")
                 .font(.caption2)
-                .foregroundStyle(Color.civBorder)
+                .foregroundStyle(Color.kusiBorder)
         }
     }
 
     private func settingsRow(icon: String, title: String) -> some View {
         HStack {
             Label(title, systemImage: icon)
-                .foregroundStyle(Color.civTextPrimary)
+                .foregroundStyle(Color.kusiTextPrimary)
             Spacer()
             Image(systemName: "chevron.right")
                 .font(.caption2)
-                .foregroundStyle(Color.civBorder)
+                .foregroundStyle(Color.kusiBorder)
         }
     }
 }

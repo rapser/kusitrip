@@ -8,15 +8,15 @@ struct RegisterView: View {
             Spacer()
             Image(systemName: "person.badge.plus")
                 .font(.system(size: 72))
-                .foregroundStyle(Color.civPrimary)
+                .foregroundStyle(Color.kusiTextPrimary)
             VStack(spacing: 12) {
                 Text("Crea tu cuenta")
                     .font(.title)
                     .fontWeight(.bold)
-                    .foregroundStyle(Color.civTextPrimary)
+                    .foregroundStyle(Color.kusiTextPrimary)
                 Text("El registro estará disponible\npróximamente en esta versión.")
                     .font(.body)
-                    .foregroundStyle(Color.civTextSecondary)
+                    .foregroundStyle(Color.kusiTextSecondary)
                     .multilineTextAlignment(.center)
             }
             PrimaryButton(title: "Volver al inicio de sesión") {
@@ -25,7 +25,7 @@ struct RegisterView: View {
             Spacer()
         }
         .padding(32)
-        .background(Color.civBackground)
+        .background(Color.kusiBackground)
         .navigationTitle("Crear cuenta")
         .navigationBarTitleDisplayMode(.inline)
     }

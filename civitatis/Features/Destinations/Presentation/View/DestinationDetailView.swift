@@ -20,7 +20,7 @@ struct DestinationDetailView: View {
                     ProgressView()
                         .frame(maxWidth: .infinity)
                         .padding(.top, 40)
-                        .tint(Color.civPrimary)
+                        .tint(Color.kusiTextPrimary)
                 } else if viewModel.filteredActivities.isEmpty {
                     emptyActivities
                 } else {
@@ -28,7 +28,7 @@ struct DestinationDetailView: View {
                 }
             }
         }
-        .background(Color.civBackground)
+        .background(Color.kusiBackground)
         .navigationBarTitleDisplayMode(.inline)
         .task { await viewModel.load(destinationId: destinationId) }
     }
@@ -39,7 +39,7 @@ struct DestinationDetailView: View {
             AsyncImage(url: URL(string: dest.imageURL)) { phase in
                 switch phase {
                 case .success(let image): image.resizable().aspectRatio(contentMode: .fill)
-                default: Color.civPrimary
+                default: Color.kusiPrimary
                 }
             }
             .frame(height: 220)
@@ -78,21 +78,21 @@ struct DestinationDetailView: View {
 
             Text(dest.description)
                 .font(.subheadline)
-                .foregroundStyle(Color.civTextSecondary)
+                .foregroundStyle(Color.kusiTextSecondary)
                 .lineLimit(3)
         }
         .padding(16)
-        .background(Color.civSurface)
+        .background(Color.kusiSurface)
     }
 
     private func statBadge(icon: String, text: String) -> some View {
         HStack(spacing: 4) {
             Image(systemName: icon)
                 .font(.caption2)
-                .foregroundStyle(Color.civPrimary)
+                .foregroundStyle(Color.kusiTextPrimary)
             Text(text)
                 .font(.caption2)
-                .foregroundStyle(Color.civTextSecondary)
+                .foregroundStyle(Color.kusiTextSecondary)
         }
     }
 
@@ -135,10 +135,10 @@ struct DestinationDetailView: View {
         VStack(spacing: 12) {
             Image(systemName: "tray")
                 .font(.system(size: 40))
-                .foregroundStyle(Color.civBorder)
+                .foregroundStyle(Color.kusiBorder)
             Text("No hay actividades en esta categoría")
                 .font(.subheadline)
-                .foregroundStyle(Color.civTextSecondary)
+                .foregroundStyle(Color.kusiTextSecondary)
         }
         .frame(maxWidth: .infinity)
         .padding(40)
@@ -155,7 +155,7 @@ private struct ActivityRowCard: View {
             AsyncImage(url: URL(string: activity.primaryImageURL)) { phase in
                 switch phase {
                 case .success(let image): image.resizable().aspectRatio(contentMode: .fill)
-                default: Color.civBorder.overlay(ProgressView().tint(Color.civPrimary))
+                default: Color.kusiBorder.overlay(ProgressView().tint(Color.kusiTextPrimary))
                 }
             }
             .frame(width: 100, height: 90)
@@ -166,11 +166,11 @@ private struct ActivityRowCard: View {
                 Text(activity.categoryLabel)
                     .font(.caption2)
                     .fontWeight(.semibold)
-                    .foregroundStyle(Color.civPrimary)
+                    .foregroundStyle(Color.kusiTextPrimary)
                 Text(activity.title)
                     .font(.subheadline)
                     .fontWeight(.semibold)
-                    .foregroundStyle(Color.civTextPrimary)
+                    .foregroundStyle(Color.kusiTextPrimary)
                     .lineLimit(2)
                 HStack(spacing: 4) {
                     StarRatingView(rating: activity.ratingValue)
@@ -178,26 +178,26 @@ private struct ActivityRowCard: View {
                         .font(.caption)
                         .fontWeight(.bold)
                     Text("·")
-                        .foregroundStyle(Color.civBorder)
+                        .foregroundStyle(Color.kusiBorder)
                     Text(activity.reviewCountText)
                         .font(.caption)
-                        .foregroundStyle(Color.civTextSecondary)
+                        .foregroundStyle(Color.kusiTextSecondary)
                 }
                 HStack(spacing: 4) {
                     if activity.hasFreeCancel {
                         Image(systemName: "checkmark.circle.fill")
                             .font(.caption2)
-                            .foregroundStyle(Color.civPrimary)
+                            .foregroundStyle(Color.kusiTextPrimary)
                         Text("Cancelación gratuita")
                             .font(.caption2)
-                            .foregroundStyle(Color.civPrimary)
+                            .foregroundStyle(Color.kusiTextPrimary)
                     }
                 }
                 if activity.isFree {
                     Text("¡Gratis!")
                         .font(.subheadline)
                         .fontWeight(.bold)
-                        .foregroundStyle(Color.civPrimary)
+                        .foregroundStyle(Color.kusiTextPrimary)
                 } else {
                     HStack(alignment: .firstTextBaseline, spacing: 4) {
                         if let pct = activity.discountPercentage {
@@ -206,13 +206,13 @@ private struct ActivityRowCard: View {
                                 .fontWeight(.bold)
                                 .foregroundStyle(.white)
                                 .padding(.horizontal, 4).padding(.vertical, 2)
-                                .background(Color.civDiscountRed)
+                                .background(Color.kusiDiscountRed)
                                 .clipShape(RoundedRectangle(cornerRadius: 3))
                         }
                         Text(activity.formattedPrice)
                             .font(.subheadline)
                             .fontWeight(.bold)
-                            .foregroundStyle(Color.civTextPrimary)
+                            .foregroundStyle(Color.kusiTextPrimary)
                     }
                 }
             }

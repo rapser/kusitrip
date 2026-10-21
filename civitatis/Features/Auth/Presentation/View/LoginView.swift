@@ -11,27 +11,28 @@ struct LoginView: View {
                 footerSection
             }
         }
-        .background(Color.civBackground)
+        .background(Color.kusiSurface)
         .scrollBounceBehavior(.basedOnSize)
         .ignoresSafeArea(edges: .top)
+        .navigationBarHidden(true)
     }
 
     // MARK: - Header
     private var headerSection: some View {
         ZStack(alignment: .bottom) {
-            Color.civPrimary
+            Color.kusiPrimary
                 .frame(height: 240)
 
             VStack(spacing: 8) {
                 Image(systemName: "globe.europe.africa.fill")
                     .font(.system(size: 52))
-                    .foregroundStyle(.white)
-                Text("civitatis")
+                    .foregroundStyle(Color.kusiTextPrimary)
+                Text("Kusi Trip")
                     .font(.system(size: 32, weight: .black))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color.kusiTextPrimary)
                 Text("Visitas guiadas y excursiones en español")
                     .font(.subheadline)
-                    .foregroundStyle(.white.opacity(0.85))
+                    .foregroundStyle(Color.kusiTextPrimary.opacity(0.8))
                     .multilineTextAlignment(.center)
             }
             .padding(.bottom, 32)
@@ -45,23 +46,31 @@ struct LoginView: View {
                 Text("Iniciar sesión")
                     .font(.title2)
                     .fontWeight(.bold)
-                    .foregroundStyle(Color.civTextPrimary)
+                    .foregroundStyle(Color.kusiTextPrimary)
 
                 // Email field
                 VStack(alignment: .leading, spacing: 6) {
                     Label("Correo electrónico", systemImage: "envelope")
                         .font(.caption)
                         .fontWeight(.medium)
-                        .foregroundStyle(Color.civTextSecondary)
-                    TextField("email@ejemplo.com", text: $viewModel.email)
-                        .textContentType(.emailAddress)
-                        .keyboardType(.emailAddress)
-                        .autocorrectionDisabled()
-                        .textInputAutocapitalization(.never)
-                        .padding()
-                        .background(Color.civSurface)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.civBorder))
+                        .foregroundStyle(Color.kusiTextSecondary)
+                    ZStack(alignment: .leading) {
+                        if viewModel.email.isEmpty {
+                            Text("email@ejemplo.com")
+                                .foregroundStyle(Color.kusiTextSecondary)
+                                .tint(Color.kusiTextSecondary)
+                        }
+                        TextField("", text: $viewModel.email)
+                            .foregroundStyle(Color.kusiTextPrimary)
+                            .tint(Color.kusiTextPrimary)
+                            .keyboardType(.emailAddress)
+                            .autocorrectionDisabled()
+                            .textInputAutocapitalization(.never)
+                    }
+                    .padding()
+                    .background(Color.kusiSurface)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.kusiBorder))
                 }
 
                 // Password field
@@ -69,42 +78,50 @@ struct LoginView: View {
                     Label("Contraseña", systemImage: "lock")
                         .font(.caption)
                         .fontWeight(.medium)
-                        .foregroundStyle(Color.civTextSecondary)
+                        .foregroundStyle(Color.kusiTextSecondary)
                     HStack {
-                        Group {
-                            if viewModel.showPassword {
-                                TextField("Contraseña", text: $viewModel.password)
-                            } else {
-                                SecureField("Contraseña", text: $viewModel.password)
+                        ZStack(alignment: .leading) {
+                            if viewModel.password.isEmpty {
+                                Text("Contraseña")
+                                    .foregroundStyle(Color.kusiTextSecondary)
                             }
+                            Group {
+                                if viewModel.showPassword {
+                                    TextField("", text: $viewModel.password)
+                                } else {
+                                    SecureField("", text: $viewModel.password)
+                                }
+                            }
+                            .foregroundStyle(Color.kusiTextPrimary)
+                            .tint(Color.kusiTextPrimary)
+                            .textContentType(.password)
+                            .autocorrectionDisabled()
                         }
-                        .textContentType(.password)
-                        .autocorrectionDisabled()
                         Button {
                             viewModel.showPassword.toggle()
                         } label: {
                             Image(systemName: viewModel.showPassword ? "eye.slash" : "eye")
-                                .foregroundStyle(Color.civTextSecondary)
+                                .foregroundStyle(Color.kusiTextSecondary)
                         }
                     }
                     .padding()
-                    .background(Color.civSurface)
+                    .background(Color.kusiSurface)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
-                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.civBorder))
+                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.kusiBorder))
                 }
 
                 // Error
                 if let error = viewModel.errorMessage {
                     HStack(spacing: 8) {
                         Image(systemName: "exclamationmark.circle.fill")
-                            .foregroundStyle(Color.civDiscountRed)
+                            .foregroundStyle(Color.kusiDiscountRed)
                         Text(error)
                             .font(.caption)
-                            .foregroundStyle(Color.civDiscountRed)
+                            .foregroundStyle(Color.kusiDiscountRed)
                         Spacer()
                     }
                     .padding(12)
-                    .background(Color.civDiscountRed.opacity(0.08))
+                    .background(Color.kusiDiscountRed.opacity(0.08))
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                 }
 
@@ -113,7 +130,7 @@ struct LoginView: View {
                     Spacer()
                     Button("¿Olvidaste tu contraseña?") {}
                         .font(.footnote)
-                        .foregroundStyle(Color.civPrimary)
+                        .foregroundStyle(Color.kusiTextPrimary)
                 }
 
                 // Login button
@@ -122,7 +139,7 @@ struct LoginView: View {
                 }
             }
             .padding(24)
-            .background(Color.civSurface)
+            .background(Color.kusiSurface)
             .clipShape(
                 UnevenRoundedRectangle(topLeadingRadius: 24, topTrailingRadius: 24)
             )
@@ -134,20 +151,20 @@ struct LoginView: View {
     private var footerSection: some View {
         VStack(spacing: 20) {
             HStack {
-                Rectangle().fill(Color.civBorder).frame(height: 1)
+                Rectangle().fill(Color.kusiBorder).frame(height: 1)
                 Text("o")
                     .font(.footnote)
-                    .foregroundStyle(Color.civTextSecondary)
+                    .foregroundStyle(Color.kusiTextSecondary)
                     .padding(.horizontal, 10)
-                Rectangle().fill(Color.civBorder).frame(height: 1)
+                Rectangle().fill(Color.kusiBorder).frame(height: 1)
             }
 
             NavigationLink(destination: RegisterView()) {
                 HStack(spacing: 0) {
-                    Text("¿Primera vez en Civitatis? ")
-                        .foregroundStyle(Color.civTextSecondary)
+                    Text("¿Primera vez en Kusi Trip? ")
+                        .foregroundStyle(Color.kusiTextSecondary)
                     Text("Regístrate")
-                        .foregroundStyle(Color.civPrimary)
+                        .foregroundStyle(Color.kusiTextPrimary)
                         .fontWeight(.semibold)
                 }
                 .font(.subheadline)
@@ -158,19 +175,19 @@ struct LoginView: View {
                 Text("Credenciales de demo")
                     .font(.caption2)
                     .fontWeight(.semibold)
-                    .foregroundStyle(Color.civTextSecondary)
-                Text("usuario@civitatis.com  ·  civitatis123")
+                    .foregroundStyle(Color.kusiTextSecondary)
+                Text("usuario@kusitrip.com  ·  kusitrip123")
                     .font(.caption2)
-                    .foregroundStyle(Color.civTextSecondary)
+                    .foregroundStyle(Color.kusiTextSecondary)
                     .fontDesign(.monospaced)
             }
             .padding(10)
-            .background(Color.civBorder.opacity(0.4))
+            .background(Color.kusiBorder.opacity(0.4))
             .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .padding(.horizontal, 24)
         .padding(.vertical, 24)
-        .background(Color.civSurface)
+        .background(Color.kusiSurface)
         .padding(.bottom, 20)
     }
 }

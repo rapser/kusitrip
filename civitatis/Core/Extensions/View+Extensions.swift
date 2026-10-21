@@ -3,7 +3,7 @@ import SwiftUI
 extension View {
     func civCard(cornerRadius: CGFloat = 12, shadow: Bool = true) -> some View {
         self
-            .background(Color.civSurface)
+            .background(Color.kusiSurface)
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
             .shadow(color: .black.opacity(shadow ? 0.08 : 0), radius: 4, x: 0, y: 2)
     }

@@ -15,13 +15,13 @@ struct ActivityDetailView: View {
         Group {
             if viewModel.isLoading {
                 ProgressView()
-                    .tint(Color.civPrimary)
+                    .tint(Color.kusiTextPrimary)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if let activity = viewModel.activity {
                 content(activity)
             }
         }
-        .background(Color.civBackground)
+        .background(Color.kusiBackground)
         .task { await viewModel.load(activityId: activityId) }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -31,7 +31,7 @@ struct ActivityDetailView: View {
                         toggleFavorite(activity)
                     } label: {
                         Image(systemName: isFavorited ? "heart.fill" : "heart")
-                            .foregroundStyle(isFavorited ? Color.civDiscountRed : Color.civTextPrimary)
+                            .foregroundStyle(isFavorited ? Color.kusiDiscountRed : Color.kusiTextPrimary)
                     }
                 }
             }
@@ -66,7 +66,7 @@ struct ActivityDetailView: View {
                     case .success(let image):
                         image.resizable().aspectRatio(contentMode: .fill)
                     default:
-                        Color.civBorder.overlay(ProgressView().tint(Color.civPrimary))
+                        Color.kusiBorder.overlay(ProgressView().tint(Color.kusiTextPrimary))
                     }
                 }
                 .clipped()
@@ -84,25 +84,25 @@ struct ActivityDetailView: View {
             Text(activity.title)
                 .font(.title2)
                 .fontWeight(.bold)
-                .foregroundStyle(Color.civTextPrimary)
+                .foregroundStyle(Color.kusiTextPrimary)
 
             HStack(spacing: 8) {
                 StarRatingView(rating: activity.ratingValue)
                 Text(activity.ratingText)
                     .font(.subheadline)
                     .fontWeight(.bold)
-                    .foregroundStyle(Color.civTextPrimary)
+                    .foregroundStyle(Color.kusiTextPrimary)
                 Text("·")
-                    .foregroundStyle(Color.civBorder)
+                    .foregroundStyle(Color.kusiBorder)
                 Text(activity.reviewCountText)
                     .font(.subheadline)
-                    .foregroundStyle(Color.civTextSecondary)
+                    .foregroundStyle(Color.kusiTextSecondary)
             }
 
             HStack(spacing: 8) {
                 Label(activity.travelerCountText, systemImage: "figure.walk")
                     .font(.caption)
-                    .foregroundStyle(Color.civTextSecondary)
+                    .foregroundStyle(Color.kusiTextSecondary)
             }
 
             HStack(spacing: 8) {
@@ -110,18 +110,18 @@ struct ActivityDetailView: View {
                     Label("Cancelación gratuita", systemImage: "checkmark.circle.fill")
                         .font(.caption)
                         .fontWeight(.medium)
-                        .foregroundStyle(Color.civPrimary)
+                        .foregroundStyle(Color.kusiTextPrimary)
                 }
                 Label(activity.durationText, systemImage: "clock")
                     .font(.caption)
-                    .foregroundStyle(Color.civTextSecondary)
+                    .foregroundStyle(Color.kusiTextSecondary)
                 Label(activity.categoryLabel, systemImage: activity.categoryIcon)
                     .font(.caption)
-                    .foregroundStyle(Color.civTextSecondary)
+                    .foregroundStyle(Color.kusiTextSecondary)
             }
         }
         .padding(16)
-        .background(Color.civSurface)
+        .background(Color.kusiSurface)
     }
 
     // MARK: - Description
@@ -129,17 +129,17 @@ struct ActivityDetailView: View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Descripción")
                 .font(.headline)
-                .foregroundStyle(Color.civTextPrimary)
+                .foregroundStyle(Color.kusiTextPrimary)
             Text(activity.fullDescription)
                 .font(.subheadline)
-                .foregroundStyle(Color.civTextSecondary)
+                .foregroundStyle(Color.kusiTextSecondary)
                 .lineLimit(viewModel.isDescriptionExpanded ? nil : 4)
             Button(viewModel.isDescriptionExpanded ? "Ver menos" : "Ver más") {
                 withAnimation { viewModel.isDescriptionExpanded.toggle() }
             }
             .font(.subheadline)
             .fontWeight(.semibold)
-            .foregroundStyle(Color.civPrimary)
+            .foregroundStyle(Color.kusiTextPrimary)
         }
         .padding(16)
 
@@ -150,7 +150,7 @@ struct ActivityDetailView: View {
         VStack(alignment: .leading, spacing: 0) {
             Text("Detalles")
                 .font(.headline)
-                .foregroundStyle(Color.civTextPrimary)
+                .foregroundStyle(Color.kusiTextPrimary)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
 
@@ -171,23 +171,23 @@ struct ActivityDetailView: View {
                 Label("Incluido", systemImage: "checkmark.seal")
                     .font(.subheadline)
                     .fontWeight(.medium)
-                    .foregroundStyle(Color.civTextPrimary)
+                    .foregroundStyle(Color.kusiTextPrimary)
                 ForEach(activity.includes, id: \.self) { include in
                     HStack(alignment: .top, spacing: 8) {
                         Image(systemName: "checkmark.circle.fill")
-                            .foregroundStyle(Color.civPrimary)
+                            .foregroundStyle(Color.kusiTextPrimary)
                             .font(.caption)
                             .padding(.top, 2)
                         Text(include)
                             .font(.subheadline)
-                            .foregroundStyle(Color.civTextSecondary)
+                            .foregroundStyle(Color.kusiTextSecondary)
                     }
                 }
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
         }
-        .background(Color.civSurface)
+        .background(Color.kusiSurface)
         .padding(.top, 8)
     }
 
@@ -195,15 +195,15 @@ struct ActivityDetailView: View {
         HStack(spacing: 12) {
             Image(systemName: icon)
                 .font(.body)
-                .foregroundStyle(Color.civPrimary)
+                .foregroundStyle(Color.kusiTextPrimary)
                 .frame(width: 24)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .font(.caption)
-                    .foregroundStyle(Color.civTextSecondary)
+                    .foregroundStyle(Color.kusiTextSecondary)
                 Text(value)
                     .font(.subheadline)
-                    .foregroundStyle(Color.civTextPrimary)
+                    .foregroundStyle(Color.kusiTextPrimary)
             }
             Spacer()
         }
@@ -217,11 +217,11 @@ struct ActivityDetailView: View {
             HStack {
                 Text("Opiniones")
                     .font(.headline)
-                    .foregroundStyle(Color.civTextPrimary)
+                    .foregroundStyle(Color.kusiTextPrimary)
                 Spacer()
                 Text("\(viewModel.reviews.count) reseñas")
                     .font(.caption)
-                    .foregroundStyle(Color.civTextSecondary)
+                    .foregroundStyle(Color.kusiTextSecondary)
             }
             .padding(.horizontal, 16)
             .padding(.top, 16)
@@ -229,7 +229,7 @@ struct ActivityDetailView: View {
             if viewModel.reviews.isEmpty {
                 Text("Sé el primero en opinar sobre esta actividad.")
                     .font(.subheadline)
-                    .foregroundStyle(Color.civTextSecondary)
+                    .foregroundStyle(Color.kusiTextSecondary)
                     .padding(.horizontal, 16)
             } else {
                 ForEach(viewModel.reviews.prefix(3)) { review in
@@ -246,14 +246,14 @@ struct ActivityDetailView: View {
         VStack(alignment: .leading, spacing: 12) {
             Text("También te puede interesar")
                 .font(.headline)
-                .foregroundStyle(Color.civTextPrimary)
+                .foregroundStyle(Color.kusiTextPrimary)
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
 
             if viewModel.relatedActivities.isEmpty {
                 Text("No hay actividades relacionadas.")
                     .font(.subheadline)
-                    .foregroundStyle(Color.civTextSecondary)
+                    .foregroundStyle(Color.kusiTextSecondary)
                     .padding(.horizontal, 16)
             } else {
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -280,17 +280,17 @@ struct ActivityDetailView: View {
             NavigationLink(value: AppRoute.booking(activityId: activityId)) {
                 Text("Reservar")
                     .fontWeight(.bold)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color.kusiTextPrimary)
                     .padding(.horizontal, 32)
                     .padding(.vertical, 14)
-                    .background(Color.civPrimary)
+                    .background(Color.kusiPrimary)
                     .clipShape(RoundedRectangle(cornerRadius: 14))
             }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
-        .background(Color.civSurface)
-        .overlay(Rectangle().frame(height: 1).foregroundStyle(Color.civBorder), alignment: .top)
+        .background(Color.kusiSurface)
+        .overlay(Rectangle().frame(height: 1).foregroundStyle(Color.kusiBorder), alignment: .top)
     }
 
     // MARK: - Toggle favorite
@@ -322,11 +322,11 @@ private struct ReviewCard: View {
                 // Avatar circle
                 ZStack {
                     Circle()
-                        .fill(Color.civPrimary.opacity(0.15))
+                        .fill(Color.kusiTextPrimary.opacity(0.12))
                     Text(review.initials)
                         .font(.subheadline)
                         .fontWeight(.bold)
-                        .foregroundStyle(Color.civPrimary)
+                        .foregroundStyle(Color.kusiTextPrimary)
                 }
                 .frame(width: 42, height: 42)
 
@@ -334,33 +334,33 @@ private struct ReviewCard: View {
                     Text(review.authorName)
                         .font(.subheadline)
                         .fontWeight(.semibold)
-                        .foregroundStyle(Color.civTextPrimary)
+                        .foregroundStyle(Color.kusiTextPrimary)
                     Text(review.city)
                         .font(.caption)
-                        .foregroundStyle(Color.civTextSecondary)
+                        .foregroundStyle(Color.kusiTextSecondary)
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 2) {
                     Text(review.ratingText)
                         .font(.subheadline)
                         .fontWeight(.bold)
-                        .foregroundStyle(Color.civPrimary)
+                        .foregroundStyle(Color.kusiTextPrimary)
                     Text(review.date)
                         .font(.caption2)
-                        .foregroundStyle(Color.civTextSecondary)
+                        .foregroundStyle(Color.kusiTextSecondary)
                 }
             }
             Text(review.comment)
                 .font(.subheadline)
-                .foregroundStyle(Color.civTextSecondary)
+                .foregroundStyle(Color.kusiTextSecondary)
                 .lineLimit(4)
             HStack(spacing: 4) {
                 Image(systemName: review.travelTypeIcon)
                     .font(.caption2)
-                    .foregroundStyle(Color.civTextSecondary)
+                    .foregroundStyle(Color.kusiTextSecondary)
                 Text(review.travelTypeLabel)
                     .font(.caption2)
-                    .foregroundStyle(Color.civTextSecondary)
+                    .foregroundStyle(Color.kusiTextSecondary)
             }
         }
         .padding(14)

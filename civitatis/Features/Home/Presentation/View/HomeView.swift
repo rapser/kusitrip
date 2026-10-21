@@ -20,7 +20,7 @@ struct HomeView: View {
                 }
             }
         }
-        .background(Color.civBackground)
+        .background(Color.kusiBackground)
         .task { await viewModel.load() }
         .navigationBarHidden(true)
     }
@@ -33,7 +33,7 @@ struct HomeView: View {
                 case .success(let image):
                     image.resizable().aspectRatio(contentMode: .fill)
                 default:
-                    Color.civPrimary
+                    Color.kusiPrimary
                 }
             }
             .frame(height: 260)
@@ -63,10 +63,10 @@ struct HomeView: View {
                     Label("Descubrir destinos", systemImage: "arrow.right")
                         .font(.footnote)
                         .fontWeight(.semibold)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Color.kusiTextPrimary)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)
-                        .background(Color.civPrimary)
+                        .background(Color.kusiPrimary)
                         .clipShape(Capsule())
                 }
                 .padding(.top, 4)
@@ -85,12 +85,12 @@ struct HomeView: View {
                 Text("Principales destinos")
                     .font(.title3)
                     .fontWeight(.bold)
-                    .foregroundStyle(Color.civTextPrimary)
+                    .foregroundStyle(Color.kusiTextPrimary)
                 Spacer()
                 NavigationLink(value: AppRoute.destinationDetail(id: "")) {
                     Text("Ver todos")
                         .font(.subheadline)
-                        .foregroundStyle(Color.civPrimary)
+                        .foregroundStyle(Color.kusiTextPrimary)
                 }
             }
             .padding(.horizontal, 16)
@@ -116,7 +116,7 @@ struct HomeView: View {
             Text("¿Qué quieres hacer?")
                 .font(.title3)
                 .fontWeight(.bold)
-                .foregroundStyle(Color.civTextPrimary)
+                .foregroundStyle(Color.kusiTextPrimary)
                 .padding(.horizontal, 16)
                 .padding(.top, 20)
 
@@ -137,7 +137,7 @@ struct HomeView: View {
             Text("Actividades destacadas")
                 .font(.title3)
                 .fontWeight(.bold)
-                .foregroundStyle(Color.civTextPrimary)
+                .foregroundStyle(Color.kusiTextPrimary)
                 .padding(.horizontal, 16)
                 .padding(.top, 20)
 
@@ -168,25 +168,25 @@ struct HomeView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Cómo nos valoran")
                     .font(.caption)
-                    .foregroundStyle(Color.civTextSecondary)
+                    .foregroundStyle(Color.kusiTextSecondary)
                 HStack(spacing: 6) {
                     Text("9,1 / 10")
                         .font(.title3)
                         .fontWeight(.black)
-                        .foregroundStyle(Color.civTextPrimary)
+                        .foregroundStyle(Color.kusiTextPrimary)
                     StarRatingView(rating: 9.1)
                 }
                 Text("+5.000.000 opiniones")
                     .font(.caption)
-                    .foregroundStyle(Color.civTextSecondary)
+                    .foregroundStyle(Color.kusiTextSecondary)
             }
             Spacer()
             Image(systemName: "globe.europe.africa.fill")
                 .font(.system(size: 44))
-                .foregroundStyle(Color.civPrimary.opacity(0.25))
+                .foregroundStyle(Color.kusiTextPrimary.opacity(0.15))
         }
         .padding(20)
-        .background(Color.civSurface)
+        .background(Color.kusiSurface)
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .padding(16)
         .padding(.bottom, 8)
@@ -197,10 +197,10 @@ struct HomeView: View {
         VStack(spacing: 16) {
             ProgressView()
                 .scaleEffect(1.4)
-                .tint(Color.civPrimary)
+                .tint(Color.kusiTextPrimary)
             Text("Cargando destinos...")
                 .font(.subheadline)
-                .foregroundStyle(Color.civTextSecondary)
+                .foregroundStyle(Color.kusiTextSecondary)
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 60)

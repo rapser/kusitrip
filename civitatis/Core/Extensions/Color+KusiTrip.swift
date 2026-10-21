@@ -1,15 +1,15 @@
 import SwiftUI
 
 extension Color {
-    static let civPrimary       = Color(hex: "00C9B1")
-    static let civPrimaryDark   = Color(hex: "009688")
-    static let civBackground    = Color(hex: "F8F9FA")
-    static let civSurface       = Color.white
-    static let civTextPrimary   = Color(hex: "1C1C1E")
-    static let civTextSecondary = Color(hex: "6C6C70")
-    static let civRatingGold    = Color(hex: "F4B400")
-    static let civDiscountRed   = Color(hex: "E53935")
-    static let civBorder        = Color(hex: "E5E5EA")
+    static let kusiPrimary       = Color(hex: "FFC53D")
+    static let kusiAccent        = Color(hex: "FF6B3D")
+    static let kusiBackground    = Color(hex: "F8F9FA")
+    static let kusiSurface       = Color.white
+    static let kusiTextPrimary   = Color(hex: "1B2A49")
+    static let kusiTextSecondary = Color(hex: "5B6472")
+    static let kusiRatingGold    = Color(hex: "FFC53D")
+    static let kusiDiscountRed   = Color(hex: "E53935")
+    static let kusiBorder        = Color(hex: "E5E5EA")
 
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)

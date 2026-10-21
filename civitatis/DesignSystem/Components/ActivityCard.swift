@@ -25,15 +25,15 @@ struct ActivityCard: View {
                         .aspectRatio(contentMode: .fill)
                 case .failure:
                     Rectangle()
-                        .fill(Color.civBorder)
+                        .fill(Color.kusiBorder)
                         .overlay(
                             Image(systemName: "photo")
-                                .foregroundStyle(Color.civTextSecondary)
+                                .foregroundStyle(Color.kusiTextSecondary)
                         )
                 default:
                     Rectangle()
-                        .fill(Color.civBorder.opacity(0.4))
-                        .overlay(ProgressView().tint(Color.civPrimary))
+                        .fill(Color.kusiBorder.opacity(0.4))
+                        .overlay(ProgressView().tint(Color.kusiTextPrimary))
                 }
             }
             .frame(height: 160)
@@ -43,7 +43,7 @@ struct ActivityCard: View {
             Button(action: { onFavorite(activity.id) }) {
                 Image(systemName: isFavorited ? "heart.fill" : "heart")
                     .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(isFavorited ? Color.civDiscountRed : .white)
+                    .foregroundStyle(isFavorited ? Color.kusiDiscountRed : .white)
                     .padding(8)
                     .background(Color.black.opacity(0.25))
                     .clipShape(Circle())
@@ -62,10 +62,10 @@ struct ActivityCard: View {
                             .font(.caption2)
                             .fontWeight(.medium)
                     }
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color.kusiTextPrimary)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
-                    .background(Color.civPrimary)
+                    .background(Color.kusiPrimary)
                     .padding([.leading, .bottom], 8)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -81,13 +81,13 @@ struct ActivityCard: View {
             Text(activity.categoryLabel)
                 .font(.caption2)
                 .fontWeight(.semibold)
-                .foregroundStyle(Color.civPrimary)
+                .foregroundStyle(Color.kusiTextPrimary)
 
             // Title
             Text(activity.title)
                 .font(.subheadline)
                 .fontWeight(.semibold)
-                .foregroundStyle(Color.civTextPrimary)
+                .foregroundStyle(Color.kusiTextPrimary)
                 .lineLimit(2)
                 .fixedSize(horizontal: false, vertical: true)
 
@@ -97,12 +97,12 @@ struct ActivityCard: View {
                 Text(activity.ratingText)
                     .font(.caption)
                     .fontWeight(.bold)
-                    .foregroundStyle(Color.civTextPrimary)
+                    .foregroundStyle(Color.kusiTextPrimary)
                 Text("·")
-                    .foregroundStyle(Color.civBorder)
+                    .foregroundStyle(Color.kusiBorder)
                 Text(activity.reviewCountText)
                     .font(.caption)
-                    .foregroundStyle(Color.civTextSecondary)
+                    .foregroundStyle(Color.kusiTextSecondary)
                     .lineLimit(1)
                 Spacer()
             }
@@ -110,10 +110,10 @@ struct ActivityCard: View {
             HStack(spacing: 4) {
                 Image(systemName: "clock")
                     .font(.caption2)
-                    .foregroundStyle(Color.civTextSecondary)
+                    .foregroundStyle(Color.kusiTextSecondary)
                 Text(activity.durationText)
                     .font(.caption)
-                    .foregroundStyle(Color.civTextSecondary)
+                    .foregroundStyle(Color.kusiTextSecondary)
                 Spacer()
             }
 
@@ -124,7 +124,7 @@ struct ActivityCard: View {
                 Text("¡Gratis!")
                     .font(.headline)
                     .fontWeight(.bold)
-                    .foregroundStyle(Color.civPrimary)
+                    .foregroundStyle(Color.kusiTextPrimary)
             } else {
                 VStack(alignment: .leading, spacing: 2) {
                     if let original = activity.formattedOriginalPrice,
@@ -132,26 +132,26 @@ struct ActivityCard: View {
                         HStack(spacing: 6) {
                             Text(original)
                                 .font(.caption)
-                                .foregroundStyle(Color.civTextSecondary)
-                                .strikethrough(color: Color.civTextSecondary)
+                                .foregroundStyle(Color.kusiTextSecondary)
+                                .strikethrough(color: Color.kusiTextSecondary)
                             Text("-\(pct)%")
                                 .font(.caption2)
                                 .fontWeight(.bold)
                                 .foregroundStyle(.white)
                                 .padding(.horizontal, 4)
                                 .padding(.vertical, 2)
-                                .background(Color.civDiscountRed)
+                                .background(Color.kusiDiscountRed)
                                 .clipShape(RoundedRectangle(cornerRadius: 3))
                         }
                     }
                     HStack(alignment: .firstTextBaseline, spacing: 3) {
                         Text("desde")
                             .font(.caption)
-                            .foregroundStyle(Color.civTextSecondary)
+                            .foregroundStyle(Color.kusiTextSecondary)
                         Text(activity.formattedPrice)
                             .font(.subheadline)
                             .fontWeight(.bold)
-                            .foregroundStyle(Color.civTextPrimary)
+                            .foregroundStyle(Color.kusiTextPrimary)
                     }
                 }
             }

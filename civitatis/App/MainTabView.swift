@@ -62,7 +62,7 @@ struct MainTabView: View {
             .tabItem { Label("Perfil", systemImage: "person.fill") }
             .tag(Tab.profile)
         }
-        .tint(Color.civPrimary)
+        .tint(Color.kusiPrimary)
     }
 
     // MARK: - Route → View mapping

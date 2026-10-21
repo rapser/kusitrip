@@ -13,7 +13,7 @@ struct PrimaryButton: View {
             HStack {
                 if isLoading {
                     ProgressView()
-                        .tint(.white)
+                        .tint(Color.kusiTextPrimary)
                         .scaleEffect(0.9)
                 } else {
                     Text(title)
@@ -22,8 +22,8 @@ struct PrimaryButton: View {
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 16)
-            .background(isDisabled ? Color.civBorder : Color.civPrimary)
-            .foregroundStyle(.white)
+            .background(isDisabled ? Color.kusiBorder : Color.kusiPrimary)
+            .foregroundStyle(Color.kusiTextPrimary)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
         .disabled(isLoading || isDisabled)

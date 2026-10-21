@@ -13,7 +13,7 @@ struct BookingView: View {
                 summarySection
             }
         }
-        .background(Color.civBackground)
+        .background(Color.kusiBackground)
         .navigationTitle("Reservar")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear { viewModel.loadActivity(id: activityId) }
@@ -29,24 +29,24 @@ struct BookingView: View {
         HStack(spacing: 12) {
             Image(systemName: "ticket.fill")
                 .font(.title2)
-                .foregroundStyle(Color.civPrimary)
+                .foregroundStyle(Color.kusiTextPrimary)
                 .frame(width: 48, height: 48)
-                .background(Color.civPrimary.opacity(0.10))
+                .background(Color.kusiTextPrimary.opacity(0.10))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(viewModel.activityTitle)
                     .font(.subheadline)
                     .fontWeight(.semibold)
-                    .foregroundStyle(Color.civTextPrimary)
+                    .foregroundStyle(Color.kusiTextPrimary)
                     .lineLimit(2)
                 Label("Cancelación gratuita", systemImage: "checkmark.circle.fill")
                     .font(.caption)
-                    .foregroundStyle(Color.civPrimary)
+                    .foregroundStyle(Color.kusiTextPrimary)
             }
         }
         .padding(16)
-        .background(Color.civSurface)
+        .background(Color.kusiSurface)
     }
 
     // MARK: - Form
@@ -57,7 +57,7 @@ struct BookingView: View {
                 Label("Fecha de la actividad", systemImage: "calendar")
                     .font(.subheadline)
                     .fontWeight(.semibold)
-                    .foregroundStyle(Color.civTextPrimary)
+                    .foregroundStyle(Color.kusiTextPrimary)
                 DatePicker(
                     "",
                     selection: $viewModel.selectedDate,
@@ -65,10 +65,10 @@ struct BookingView: View {
                     displayedComponents: .date
                 )
                 .datePickerStyle(.graphical)
-                .tint(Color.civPrimary)
+                .tint(Color.kusiTextPrimary)
             }
             .padding(16)
-            .background(Color.civSurface)
+            .background(Color.kusiSurface)
             .padding(.top, 12)
 
             // Time picker
@@ -76,7 +76,7 @@ struct BookingView: View {
                 Label("Hora", systemImage: "clock")
                     .font(.subheadline)
                     .fontWeight(.semibold)
-                    .foregroundStyle(Color.civTextPrimary)
+                    .foregroundStyle(Color.kusiTextPrimary)
                 DatePicker(
                     "",
                     selection: $viewModel.selectedDate,
@@ -84,10 +84,10 @@ struct BookingView: View {
                 )
                 .datePickerStyle(.wheel)
                 .frame(height: 100)
-                .tint(Color.civPrimary)
+                .tint(Color.kusiTextPrimary)
             }
             .padding(16)
-            .background(Color.civSurface)
+            .background(Color.kusiSurface)
             .padding(.top, 8)
 
             // People picker
@@ -95,11 +95,11 @@ struct BookingView: View {
                 Label("Número de personas", systemImage: "person.2")
                     .font(.subheadline)
                     .fontWeight(.semibold)
-                    .foregroundStyle(Color.civTextPrimary)
+                    .foregroundStyle(Color.kusiTextPrimary)
                 HStack {
                     Text("\(viewModel.numberOfPeople) persona\(viewModel.numberOfPeople > 1 ? "s" : "")")
                         .font(.body)
-                        .foregroundStyle(Color.civTextPrimary)
+                        .foregroundStyle(Color.kusiTextPrimary)
                     Spacer()
                     Stepper(
                         "",
@@ -107,11 +107,11 @@ struct BookingView: View {
                         in: 1...20
                     )
                     .labelsHidden()
-                    .tint(Color.civPrimary)
+                    .tint(Color.kusiTextPrimary)
                 }
             }
             .padding(16)
-            .background(Color.civSurface)
+            .background(Color.kusiSurface)
             .padding(.top, 8)
         }
     }
@@ -129,12 +129,12 @@ struct BookingView: View {
                     Text("Total")
                         .font(.headline)
                         .fontWeight(.bold)
-                        .foregroundStyle(Color.civTextPrimary)
+                        .foregroundStyle(Color.kusiTextPrimary)
                     Spacer()
                     Text(viewModel.formattedTotal)
                         .font(.title3)
                         .fontWeight(.black)
-                        .foregroundStyle(Color.civPrimary)
+                        .foregroundStyle(Color.kusiTextPrimary)
                 }
             }
             .padding(16)
@@ -143,9 +143,9 @@ struct BookingView: View {
             if let error = viewModel.errorMessage {
                 Text(error)
                     .font(.caption)
-                    .foregroundStyle(Color.civDiscountRed)
+                    .foregroundStyle(Color.kusiDiscountRed)
                     .padding(10)
-                    .background(Color.civDiscountRed.opacity(0.08))
+                    .background(Color.kusiDiscountRed.opacity(0.08))
                     .clipShape(RoundedRectangle(cornerRadius: 8))
             }
 
@@ -164,12 +164,12 @@ struct BookingView: View {
         HStack {
             Text(label)
                 .font(.subheadline)
-                .foregroundStyle(Color.civTextSecondary)
+                .foregroundStyle(Color.kusiTextSecondary)
             Spacer()
             Text(value)
                 .font(.subheadline)
                 .fontWeight(.medium)
-                .foregroundStyle(Color.civTextPrimary)
+                .foregroundStyle(Color.kusiTextPrimary)
         }
     }
 }

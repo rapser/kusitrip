@@ -12,11 +12,11 @@ struct DestinationCard: View {
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                 case .failure:
-                    Rectangle().fill(Color.civBorder)
+                    Rectangle().fill(Color.kusiBorder)
                 default:
                     Rectangle()
-                        .fill(Color.civBorder.opacity(0.4))
-                        .overlay(ProgressView().tint(Color.civPrimary))
+                        .fill(Color.kusiBorder.opacity(0.4))
+                        .overlay(ProgressView().tint(Color.kusiTextPrimary))
                 }
             }
             .frame(width: 160, height: 200)
