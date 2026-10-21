@@ -138,7 +138,7 @@ struct BookingView: View {
                 }
             }
             .padding(16)
-            .civCard()
+            .kusiCard()
 
             if let error = viewModel.errorMessage {
                 Text(error)

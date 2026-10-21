@@ -350,6 +350,6 @@ private struct ReviewCard: View {
             }
         }
         .padding(14)
-        .civCard()
+        .kusiCard()
     }
 }

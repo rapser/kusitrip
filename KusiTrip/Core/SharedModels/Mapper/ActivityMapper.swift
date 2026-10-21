@@ -50,8 +50,8 @@ enum ActivityMapper {
             discountPercentage: discountPct,
             ratingValue: entity.rating,
             ratingText: String(format: "%.1f", entity.rating),
-            reviewCountText: "\(entity.reviewCount.civFormatted) opiniones",
-            travelerCountText: "\(entity.travelerCount.civFormatted) viajeros",
+            reviewCountText: "\(entity.reviewCount.kusiFormatted) opiniones",
+            travelerCountText: "\(entity.travelerCount.kusiFormatted) viajeros",
             primaryImageURL: entity.imageURLs.first ?? "",
             imageURLs: entity.imageURLs,
             categoryLabel: entity.category.name,
@@ -69,7 +69,7 @@ enum ActivityMapper {
 }
 
 private extension Int {
-    var civFormatted: String {
+    var kusiFormatted: String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         formatter.groupingSeparator = "."

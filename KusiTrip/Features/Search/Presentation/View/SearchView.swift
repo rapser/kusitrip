@@ -197,7 +197,7 @@ struct SearchView: View {
                 .foregroundStyle(Color.kusiBorder)
         }
         .padding(12)
-        .civCard()
+        .kusiCard()
     }
 
     private var popularSuggestions: [String] {

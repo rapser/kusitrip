@@ -1,7 +1,7 @@
 import SwiftUI
 
 extension View {
-    func civCard(cornerRadius: CGFloat = 12, shadow: Bool = true) -> some View {
+    func kusiCard(cornerRadius: CGFloat = 12, shadow: Bool = true) -> some View {
         self
             .background(Color.kusiSurface)
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius))

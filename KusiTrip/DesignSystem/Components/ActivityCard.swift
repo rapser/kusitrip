@@ -10,7 +10,7 @@ struct ActivityCard: View {
             imageSection
             contentSection
         }
-        .civCard()
+        .kusiCard()
         .frame(width: 248)
     }
 

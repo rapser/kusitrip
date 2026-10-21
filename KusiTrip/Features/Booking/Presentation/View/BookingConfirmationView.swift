@@ -68,7 +68,7 @@ struct BookingConfirmationView: View {
                     }
                 }
                 .padding(18)
-                .civCard()
+                .kusiCard()
 
                 Text("Confirmado el \(confirmation.confirmedAt)")
                     .font(.caption2)

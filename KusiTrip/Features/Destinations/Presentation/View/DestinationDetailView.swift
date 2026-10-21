@@ -212,6 +212,6 @@ private struct ActivityRowCard: View {
             Spacer()
         }
         .padding(12)
-        .civCard()
+        .kusiCard()
     }
 }

@@ -115,6 +115,6 @@ private struct FavoriteRowCard: View {
             }
         }
         .padding(12)
-        .civCard()
+        .kusiCard()
     }
 }
