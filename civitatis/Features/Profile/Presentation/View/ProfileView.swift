@@ -6,6 +6,27 @@ struct ProfileView: View {
     @State private var showLogoutAlert = false
 
     var body: some View {
+        VStack(spacing: 0) {
+            KusiScreenHeader(title: "Mi perfil")
+            profileList
+        }
+        .background(Color.kusiBackground)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(Color.kusiPrimary, for: .navigationBar)
+        .toolbarBackgroundVisibility(.visible, for: .navigationBar)
+        .tint(Color.kusiTextPrimary)
+        .onAppear { viewModel.setup(user: coordinator.currentUser) }
+        .alert("¿Cerrar sesión?", isPresented: $showLogoutAlert) {
+            Button("Cancelar", role: .cancel) {}
+            Button("Cerrar sesión", role: .destructive) {
+                Task { await viewModel.logout() }
+            }
+        } message: {
+            Text("Se cerrará tu sesión en este dispositivo.")
+        }
+    }
+
+    private var profileList: some View {
         List {
             // Avatar header
             Section {
@@ -18,22 +39,23 @@ struct ProfileView: View {
                             .foregroundStyle(Color.kusiTextPrimary)
                         Text(viewModel.currentUser?.email ?? "")
                             .font(.subheadline)
-                            .foregroundStyle(Color.kusiTextSecondary)
+                            .foregroundStyle(Color.kusiTextPrimary.opacity(0.75))
                         if let since = viewModel.currentUser?.memberSince {
                             Text("Miembro desde \(since)")
                                 .font(.caption)
-                                .foregroundStyle(Color.kusiTextSecondary)
+                                .foregroundStyle(Color.kusiTextPrimary.opacity(0.75))
                         }
                     }
                 }
-                .padding(.vertical, 8)
+                .padding(.vertical, 10)
             }
+            .listRowBackground(Color.kusiPrimary)
 
             // Stats
             Section("Mis viajes") {
                 statRow(icon: "heart.fill", color: Color.kusiDiscountRed,
                         title: "Favoritos", value: "Ver lista")
-                statRow(icon: "ticket.fill", color: Color.kusiPrimary,
+                statRow(icon: "ticket.fill", color: Color.kusiTextPrimary,
                         title: "Reservas", value: "Ver historial")
                 statRow(icon: "star.fill", color: Color.kusiRatingGold,
                         title: "Mis valoraciones", value: "Ver todas")
@@ -88,36 +110,18 @@ struct ProfileView: View {
             }
         }
         .listStyle(.insetGrouped)
-        .background(Color.kusiBackground)
-        .navigationTitle("Mi perfil")
-        .navigationBarTitleDisplayMode(.large)
-        .tint(Color.kusiPrimary)
-        .onAppear { viewModel.setup(user: coordinator.currentUser) }
-        .alert("¿Cerrar sesión?", isPresented: $showLogoutAlert) {
-            Button("Cancelar", role: .cancel) {}
-            Button("Cerrar sesión", role: .destructive) {
-                Task { await viewModel.logout() }
-            }
-        } message: {
-            Text("Se cerrará tu sesión en este dispositivo.")
-        }
+        .scrollContentBackground(.hidden)
     }
 
     // MARK: - Avatar
     private var avatarView: some View {
         ZStack {
             Circle()
-                .fill(
-                    LinearGradient(
-                        colors: [Color.kusiPrimary, Color.kusiAccent],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
+                .fill(Color.kusiTextPrimary)
             Text(viewModel.currentUser?.initials ?? "?")
                 .font(.title2)
                 .fontWeight(.black)
-                .foregroundStyle(.white)
+                .foregroundStyle(Color.kusiPrimary)
         }
         .frame(width: 64, height: 64)
     }

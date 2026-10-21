@@ -4,21 +4,26 @@ struct SearchView: View {
     @State private var viewModel = SearchViewModel()
 
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 0) {
-                if viewModel.searchText.isEmpty {
-                    suggestionsSection
-                } else if viewModel.isSearching {
-                    searchingIndicator
-                } else if viewModel.hasSearched {
-                    resultsSection
+        VStack(spacing: 0) {
+            KusiScreenHeader(title: "Buscar") {
+                SearchFieldView(prompt: "Destinos, actividades, tours...", text: $viewModel.searchText)
+            }
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 0) {
+                    if viewModel.searchText.isEmpty {
+                        suggestionsSection
+                    } else if viewModel.isSearching {
+                        searchingIndicator
+                    } else if viewModel.hasSearched {
+                        resultsSection
+                    }
                 }
             }
         }
         .background(Color.kusiBackground)
-        .navigationTitle("Buscar")
-        .navigationBarTitleDisplayMode(.large)
-        .searchable(text: $viewModel.searchText, prompt: "Destinos, actividades, tours...")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(Color.kusiPrimary, for: .navigationBar)
+        .toolbarBackgroundVisibility(.visible, for: .navigationBar)
     }
 
     // MARK: - Suggestions (empty state)
@@ -78,7 +83,7 @@ struct SearchView: View {
     private var searchingIndicator: some View {
         HStack {
             ProgressView()
-                .tint(Color.kusiPrimary)
+                .tint(Color.kusiTextPrimary)
             Text("Buscando \"\(viewModel.searchText)\"…")
                 .font(.subheadline)
                 .foregroundStyle(Color.kusiTextSecondary)
@@ -184,7 +189,7 @@ struct SearchView: View {
                 Text(activity.isFree ? "¡Gratis!" : "desde \(activity.formattedPrice)")
                     .font(.subheadline)
                     .fontWeight(.bold)
-                    .foregroundStyle(activity.isFree ? Color.kusiPrimary : Color.kusiTextPrimary)
+                    .foregroundStyle(Color.kusiTextPrimary)
             }
             Spacer()
             Image(systemName: "chevron.right")

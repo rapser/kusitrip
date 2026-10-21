@@ -4,6 +4,20 @@ struct DestinationsView: View {
     @State private var viewModel = DestinationsViewModel()
 
     var body: some View {
+        VStack(spacing: 0) {
+            KusiScreenHeader(title: "Destinos") {
+                SearchFieldView(prompt: "Buscar destinos o países", text: $viewModel.searchText)
+            }
+            content
+        }
+        .background(Color.kusiBackground)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(Color.kusiPrimary, for: .navigationBar)
+        .toolbarBackgroundVisibility(.visible, for: .navigationBar)
+        .task { await viewModel.load() }
+    }
+
+    private var content: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 0) {
                 // Continent filter
@@ -18,7 +32,7 @@ struct DestinationsView: View {
                             .padding(.horizontal, 16)
                             .padding(.vertical, 8)
                             .background(viewModel.selectedContinent == continent ? Color.kusiPrimary : Color.kusiSurface)
-                            .foregroundStyle(viewModel.selectedContinent == continent ? .white : Color.kusiTextPrimary)
+                            .foregroundStyle(Color.kusiTextPrimary)
                             .clipShape(Capsule())
                             .overlay(Capsule().stroke(viewModel.selectedContinent == continent ? Color.kusiPrimary : Color.kusiBorder))
                         }
@@ -30,7 +44,7 @@ struct DestinationsView: View {
                 if viewModel.isLoading {
                     ProgressView()
                         .scaleEffect(1.4)
-                        .tint(Color.kusiPrimary)
+                        .tint(Color.kusiTextPrimary)
                         .frame(maxWidth: .infinity)
                         .padding(.top, 60)
                 } else if viewModel.filteredDestinations.isEmpty {
@@ -41,11 +55,6 @@ struct DestinationsView: View {
                 }
             }
         }
-        .background(Color.kusiBackground)
-        .navigationTitle("Destinos")
-        .navigationBarTitleDisplayMode(.large)
-        .searchable(text: $viewModel.searchText, prompt: "Buscar destinos o países")
-        .task { await viewModel.load() }
     }
 
     private var destinationCount: some View {
@@ -101,7 +110,7 @@ private struct DestinationGridCard: View {
                 case .success(let image):
                     image.resizable().aspectRatio(contentMode: .fill)
                 default:
-                    Color.kusiBorder.overlay(ProgressView().tint(Color.kusiPrimary))
+                    Color.kusiBorder.overlay(ProgressView().tint(Color.kusiTextPrimary))
                 }
             }
             .frame(height: 180)

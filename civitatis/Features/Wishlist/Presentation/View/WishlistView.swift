@@ -6,7 +6,8 @@ struct WishlistView: View {
     @Environment(\.modelContext) private var modelContext
 
     var body: some View {
-        Group {
+        VStack(spacing: 0) {
+            KusiScreenHeader(title: "Favoritos")
             if favorites.isEmpty {
                 emptyState
             } else {
@@ -14,8 +15,9 @@ struct WishlistView: View {
             }
         }
         .background(Color.kusiBackground)
-        .navigationTitle("Favoritos")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(Color.kusiPrimary, for: .navigationBar)
+        .toolbarBackgroundVisibility(.visible, for: .navigationBar)
     }
 
     // MARK: - Empty state
@@ -40,7 +42,7 @@ struct WishlistView: View {
                     .padding(.horizontal, 24)
                     .padding(.vertical, 14)
                     .background(Color.kusiPrimary)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color.kusiTextPrimary)
                     .clipShape(Capsule())
             }
             .padding(.top, 8)
@@ -85,7 +87,7 @@ private struct FavoriteRowCard: View {
             AsyncImage(url: URL(string: favorite.activityImageURL)) { phase in
                 switch phase {
                 case .success(let image): image.resizable().aspectRatio(contentMode: .fill)
-                default: Color.kusiBorder.overlay(ProgressView().tint(Color.kusiPrimary))
+                default: Color.kusiBorder.overlay(ProgressView().tint(Color.kusiTextPrimary))
                 }
             }
             .frame(width: 88, height: 80)
@@ -102,7 +104,7 @@ private struct FavoriteRowCard: View {
                 Text(favorite.activityPrice)
                     .font(.subheadline)
                     .fontWeight(.bold)
-                    .foregroundStyle(Color.kusiPrimary)
+                    .foregroundStyle(Color.kusiTextPrimary)
 
                 Text("Guardado el \(favorite.savedAt.formatted(date: .abbreviated, time: .omitted))")
                     .font(.caption2)
