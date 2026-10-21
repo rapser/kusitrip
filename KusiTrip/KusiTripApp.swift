@@ -1,6 +1,6 @@
 //
-//  civitatisApp.swift
-//  civitatis
+//  KusiTripApp.swift
+//  KusiTrip
 //
 //  Created by miguel tomairo on 7/04/26.
 //
@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 @main
-struct civitatisApp: App {
+struct KusiTripApp: App {
     @State private var coordinator = AppCoordinator()
     @State private var isShowingSplash = true
     @State private var isSplashLeaving = false
