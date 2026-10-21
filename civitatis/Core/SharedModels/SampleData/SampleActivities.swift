@@ -91,7 +91,7 @@ enum SampleActivities {
             categoryId: "guided",
             destinationId: "dest-002",
             imageURLs: [
-                "https://images.unsplash.com/photo-1499856369571-a3a3b16b28b8?w=800&q=80",
+                "https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=800&q=80",
                 "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=80"
             ],
             durationMinutes: 120,
@@ -117,7 +117,7 @@ enum SampleActivities {
             categoryId: "boat",
             destinationId: "dest-002",
             imageURLs: [
-                "https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=800&q=80"
+                "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800&q=80"
             ],
             durationMinutes: 60,
             language: "Español",
@@ -140,7 +140,7 @@ enum SampleActivities {
             destinationId: "dest-003",
             imageURLs: [
                 "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=800&q=80",
-                "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80"
+                "https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=800&q=80"
             ],
             durationMinutes: 120,
             language: "Español",
@@ -166,8 +166,8 @@ enum SampleActivities {
             categoryId: "tickets",
             destinationId: "dest-004",
             imageURLs: [
-                "https://images.unsplash.com/photo-1583422409516-2895a77efbed?w=800&q=80",
-                "https://images.unsplash.com/photo-1558642891-54be180ea339?w=800&q=80"
+                "https://images.unsplash.com/photo-1562883676-8c7feb83f09b?w=800&q=80",
+                "https://images.unsplash.com/photo-1579282240050-352db0a14c21?w=800&q=80"
             ],
             durationMinutes: 90,
             language: "Español",
@@ -192,7 +192,8 @@ enum SampleActivities {
             categoryId: "free",
             destinationId: "dest-004",
             imageURLs: [
-                "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=800&q=80"
+                "https://images.unsplash.com/photo-1523531294919-4bcd7c65e216?w=800&q=80",
+                "https://images.unsplash.com/photo-1564221710304-0b37c8b9d729?w=800&q=80"
             ],
             durationMinutes: 150,
             language: "Español",
@@ -214,8 +215,8 @@ enum SampleActivities {
             categoryId: "tickets",
             destinationId: "dest-005",
             imageURLs: [
-                "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=80",
-                "https://images.unsplash.com/photo-1533929736458-ca588d08c8be?w=800&q=80"
+                "https://images.unsplash.com/photo-1533929736458-ca588d08c8be?w=800&q=80",
+                "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=80"
             ],
             durationMinutes: 90,
             language: "Español",
@@ -242,7 +243,8 @@ enum SampleActivities {
             categoryId: "excursions",
             destinationId: "dest-006",
             imageURLs: [
-                "https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=800&q=80"
+                "https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=800&q=80",
+                "https://images.unsplash.com/photo-1576924542622-772281b13aa8?w=800&q=80"
             ],
             durationMinutes: 480,
             language: "Español",
@@ -269,7 +271,7 @@ enum SampleActivities {
             categoryId: "boat",
             destinationId: "dest-007",
             imageURLs: [
-                "https://images.unsplash.com/photo-1555442069-c0867ee30db6?w=800&q=80"
+                "https://images.unsplash.com/photo-1565426873118-a17ed65d74b9?w=800&q=80"
             ],
             durationMinutes: 90,
             language: "Español",
