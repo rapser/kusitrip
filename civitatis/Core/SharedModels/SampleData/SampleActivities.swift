@@ -16,7 +16,6 @@ enum SampleActivities {
             destinationId: "dest-001",
             imageURLs: [
                 "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800&q=80",
-                "https://images.unsplash.com/photo-1569000813441-65ef5abdc5a6?w=800&q=80",
                 "https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?w=800&q=80"
             ],
             durationMinutes: 150,
@@ -44,7 +43,6 @@ enum SampleActivities {
             categoryId: "guided",
             destinationId: "dest-001",
             imageURLs: [
-                "https://images.unsplash.com/photo-1577083553180-732b7c9b4f54?w=800&q=80",
                 "https://images.unsplash.com/photo-1491566102020-21838225c3c8?w=800&q=80"
             ],
             durationMinutes: 150,

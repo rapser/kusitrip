@@ -10,7 +10,7 @@ enum SampleDestinations {
         ),
         DestinationDTO(
             id: "dest-002", name: "París", country: "Francia", continent: "Europa",
-            imageURL: "https://images.unsplash.com/photo-1499856369571-a3a3b16b28b8?w=800&q=80",
+            imageURL: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=80",
             activityCount: 127, travelerCount: 4382026, reviewCount: 183731, rating: 8.9,
             description: "París, la Ciudad de la Luz, es sinónimo de romance, arte y cultura. La Torre Eiffel, el Louvre, Notre-Dame, Montmartre y los Campos Elíseos forman parte del imaginario colectivo mundial. Una ciudad donde cada rincón es una obra de arte."
         ),
@@ -22,7 +22,7 @@ enum SampleDestinations {
         ),
         DestinationDTO(
             id: "dest-004", name: "Barcelona", country: "España", continent: "Europa",
-            imageURL: "https://images.unsplash.com/photo-1583422409516-2895a77efbed?w=800&q=80",
+            imageURL: "https://images.unsplash.com/photo-1562883676-8c7feb83f09b?w=800&q=80",
             activityCount: 142, travelerCount: 3100000, reviewCount: 198000, rating: 9.0,
             description: "Barcelona, la Ciudad Condal, deslumbra con la arquitectura modernista de Gaudí, sus playas mediterráneas y su animada vida cultural. La Sagrada Família, el Parque Güell, el Barrio Gótico y el Mercado de la Boqueria son paradas obligadas."
         ),
@@ -40,7 +40,7 @@ enum SampleDestinations {
         ),
         DestinationDTO(
             id: "dest-007", name: "Budapest", country: "Hungría", continent: "Europa",
-            imageURL: "https://images.unsplash.com/photo-1555442069-c0867ee30db6?w=800&q=80",
+            imageURL: "https://images.unsplash.com/photo-1565426873118-a17ed65d74b9?w=800&q=80",
             activityCount: 95, travelerCount: 1456000, reviewCount: 78000, rating: 9.0,
             description: "Budapest, la joya del Danubio, sorprende con su arquitectura espléndida a orillas del río. El Palacio de Buda, el Parlamento, los Baños Széchenyi y los mercados de la ciudad hacen de Budapest uno de los destinos más fotogénicos de Europa."
         ),
