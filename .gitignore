@@ -63,3 +63,6 @@ playground.xcworkspace
 
 # Swift Package Manager
 # Package.resolved
+### Legacy
+# Old project name, recreated by Xcode if still open
+civitatis.xcodeproj/
