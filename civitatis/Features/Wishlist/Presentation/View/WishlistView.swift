@@ -84,15 +84,9 @@ private struct FavoriteRowCard: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            AsyncImage(url: URL(string: favorite.activityImageURL)) { phase in
-                switch phase {
-                case .success(let image): image.resizable().aspectRatio(contentMode: .fill)
-                default: Color.kusiBorder.overlay(ProgressView().tint(Color.kusiTextPrimary))
-                }
-            }
-            .frame(width: 88, height: 80)
-            .clipped()
-            .clipShape(RoundedRectangle(cornerRadius: 10))
+            RemoteImage(url: favorite.activityImageURL)
+                .frame(width: 88, height: 80)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
 
             VStack(alignment: .leading, spacing: 6) {
                 Text(favorite.activityTitle)

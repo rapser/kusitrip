@@ -61,16 +61,8 @@ struct ActivityDetailView: View {
     private func gallerySection(_ activity: ActivityUI) -> some View {
         TabView(selection: $viewModel.currentImageIndex) {
             ForEach(Array(activity.imageURLs.enumerated()), id: \.offset) { index, url in
-                AsyncImage(url: URL(string: url)) { phase in
-                    switch phase {
-                    case .success(let image):
-                        image.resizable().aspectRatio(contentMode: .fill)
-                    default:
-                        Color.kusiBorder.overlay(ProgressView().tint(Color.kusiTextPrimary))
-                    }
-                }
-                .clipped()
-                .tag(index)
+                RemoteImage(url: url)
+                    .tag(index)
             }
         }
         .frame(height: 280)

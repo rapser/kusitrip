@@ -36,14 +36,7 @@ struct DestinationDetailView: View {
     // MARK: Hero
     private func heroSection(_ dest: DestinationUI) -> some View {
         ZStack(alignment: .bottom) {
-            AsyncImage(url: URL(string: dest.imageURL)) { phase in
-                switch phase {
-                case .success(let image): image.resizable().aspectRatio(contentMode: .fill)
-                default: Color.kusiPrimary
-                }
-            }
-            .frame(height: 220)
-            .clipped()
+            RemoteImage(url: dest.imageURL)
 
             LinearGradient(
                 colors: [.black.opacity(0.65), .clear],

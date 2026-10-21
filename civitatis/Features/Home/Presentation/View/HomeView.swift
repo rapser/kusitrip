@@ -28,16 +28,8 @@ struct HomeView: View {
     // MARK: - Hero banner
     private var heroBanner: some View {
         ZStack(alignment: .bottomLeading) {
-            AsyncImage(url: URL(string: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=1200&q=80")) { phase in
-                switch phase {
-                case .success(let image):
-                    image.resizable().aspectRatio(contentMode: .fill)
-                default:
-                    Color.kusiPrimary
-                }
-            }
-            .frame(height: 260)
-            .clipped()
+            RemoteImage(url: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=1200&q=80")
+                .frame(height: 260)
 
             Rectangle()
                 .fill(

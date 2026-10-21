@@ -99,45 +99,53 @@ struct DestinationsView: View {
     }
 }
 
-// Full-width grid card
 private struct DestinationGridCard: View {
     let destination: DestinationUI
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            AsyncImage(url: URL(string: destination.imageURL)) { phase in
-                switch phase {
-                case .success(let image):
-                    image.resizable().aspectRatio(contentMode: .fill)
-                default:
-                    Color.kusiBorder.overlay(ProgressView().tint(Color.kusiTextPrimary))
+        RemoteImage(url: destination.imageURL)
+            .aspectRatio(4 / 5, contentMode: .fit)
+            .overlay {
+                LinearGradient(
+                    colors: [.clear, .black.opacity(0.75)],
+                    startPoint: .center,
+                    endPoint: .bottom
+                )
+            }
+            .overlay(alignment: .topTrailing) {
+                HStack(spacing: 3) {
+                    Image(systemName: "star.fill")
+                        .font(.system(size: 10))
+                    Text(destination.ratingText)
+                        .font(.caption2)
+                        .fontWeight(.bold)
                 }
+                .foregroundStyle(Color.kusiTextPrimary)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(Color.kusiPrimary)
+                .clipShape(Capsule())
+                .padding(8)
             }
-            .frame(height: 180)
-            .clipped()
-
-            LinearGradient(
-                colors: [.clear, .black.opacity(0.78)],
-                startPoint: .center,
-                endPoint: .bottom
-            )
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text(destination.name)
-                    .font(.headline)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.white)
-                Text(destination.activityCountText)
-                    .font(.caption)
-                    .foregroundStyle(.white.opacity(0.85))
-                Text(destination.travelerCountText)
-                    .font(.caption2)
-                    .foregroundStyle(.white.opacity(0.70))
+            .overlay(alignment: .bottomLeading) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(destination.name)
+                        .font(.headline)
+                        .fontWeight(.bold)
+                        .foregroundStyle(.white)
+                        .lineLimit(1)
+                    Text(destination.country)
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.9))
+                        .lineLimit(1)
+                    Text(destination.activityCountText)
+                        .font(.caption2)
+                        .foregroundStyle(.white.opacity(0.75))
+                        .lineLimit(1)
+                }
+                .padding(10)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(10)
-        }
-        .frame(height: 180)
-        .clipShape(RoundedRectangle(cornerRadius: 14))
+            .clipShape(RoundedRectangle(cornerRadius: 14))
+            .contentShape(RoundedRectangle(cornerRadius: 14))
     }
 }
