@@ -62,7 +62,9 @@ struct MainTabView: View {
             .tabItem { Label("Perfil", systemImage: "person.fill") }
             .tag(Tab.profile)
         }
-        .tint(Color.kusiPrimary)
+        .tint(Color.kusiAccent)
+        .toolbarBackground(Color.kusiPrimary, for: .tabBar)
+        .toolbarBackgroundVisibility(.visible, for: .tabBar)
     }
 
     // MARK: - Route → View mapping
