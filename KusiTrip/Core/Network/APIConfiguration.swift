@@ -2,12 +2,12 @@ import Foundation
 
 nonisolated struct APIConfiguration: Sendable {
     let baseURL: URL
-    /// Render's free tier can take 30-60s to wake up, so requests get a generous timeout.
+    /// Render's free tier sleeps when idle; waking it up has taken over 100s.
     let timeout: TimeInterval
 
     static let `default` = APIConfiguration(
         baseURL: Bundle.main.apiBaseURL,
-        timeout: 90
+        timeout: 120
     )
 }
 
