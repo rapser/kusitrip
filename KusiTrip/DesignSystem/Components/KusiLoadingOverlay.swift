@@ -5,9 +5,15 @@ import SwiftUI
 struct KusiLoadingOverlay: View {
     let message: String
 
+    /// After this long a hint explains the wait. The API's free hosting can
+    /// take up to a minute to answer the first request after being idle.
+    private static let slowHintDelay: Duration = .seconds(6)
+    private static let slowHint = "Está tardando más de lo habitual. Puede demorar hasta un minuto."
+
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var isSpinning = false
     @State private var isPulsing = false
+    @State private var showsSlowHint = false
 
     var body: some View {
         ZStack {
@@ -42,10 +48,21 @@ struct KusiLoadingOverlay: View {
                 }
                 .frame(width: 104, height: 104)
 
-                Text(message)
-                    .font(.headline)
-                    .foregroundStyle(Color.kusiTextPrimary)
-                    .multilineTextAlignment(.center)
+                VStack(spacing: 8) {
+                    Text(message)
+                        .font(.headline)
+                        .foregroundStyle(Color.kusiTextPrimary)
+
+                    if showsSlowHint {
+                        Text(Self.slowHint)
+                            .font(.footnote)
+                            .foregroundStyle(Color.kusiTextSecondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .transition(.opacity.combined(with: .move(edge: .top)))
+                    }
+                }
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: 240)
             }
             .padding(.horizontal, 36)
             .padding(.vertical, 30)
@@ -55,8 +72,13 @@ struct KusiLoadingOverlay: View {
                     .shadow(color: .black.opacity(0.12), radius: 24, y: 10)
             )
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel(message)
+            .accessibilityLabel(showsSlowHint ? "\(message) \(Self.slowHint)" : message)
             .accessibilityAddTraits(.updatesFrequently)
+        }
+        .task {
+            try? await Task.sleep(for: Self.slowHintDelay)
+            guard !Task.isCancelled else { return }
+            withAnimation(.easeInOut(duration: 0.3)) { showsSlowHint = true }
         }
         .onAppear {
             guard !reduceMotion else { return }
@@ -125,5 +147,5 @@ private struct KusiLoadingOverlayModifier: ViewModifier {
 
 #Preview {
     Color.kusiBackground
-        .kusiLoadingOverlay(isPresented: true, message: "Cerrando sesión…")
+        .kusiLoadingOverlay(isPresented: true, message: "Iniciando sesión…")
 }
