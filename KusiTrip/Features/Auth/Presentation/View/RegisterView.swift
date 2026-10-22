@@ -57,6 +57,7 @@ struct RegisterView: View {
         .background(Color.kusiSurface)
         .navigationTitle("Crear cuenta")
         .navigationBarTitleDisplayMode(.inline)
+        .kusiLoadingOverlay(isPresented: viewModel.isLoading, message: "Creando tu cuenta…")
     }
 
     private func field(

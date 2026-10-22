@@ -15,6 +15,7 @@ struct LoginView: View {
         .scrollBounceBehavior(.basedOnSize)
         .ignoresSafeArea(edges: .top)
         .navigationBarHidden(true)
+        .kusiLoadingOverlay(isPresented: viewModel.isLoading, message: "Iniciando sesión…")
     }
 
     // MARK: - Header

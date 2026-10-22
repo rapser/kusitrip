@@ -55,8 +55,14 @@ struct KusiTripApp: App {
                         }
                     }
                 }
+                .kusiLoadingOverlay(isPresented: coordinator.isLoggingOut, message: "Cerrando sesión…")
                 .onEventBus { @MainActor event in
-                    await handle(event)
+                    coordinator.handle(event: event)
+                }
+                // Separate subscription: syncing favorites calls the API and must
+                // never delay navigation events (login, logout, session expired).
+                .onEventBus { @MainActor event in
+                    await favoritesSync.handle(event)
                 }
 
                 if isShowingSplash {
@@ -68,10 +74,10 @@ struct KusiTripApp: App {
             .preferredColorScheme(.light)
             .task {
                 // Hold the identical frame until the system launch zoom has settled.
-                async let minimumSplash: Void = Task.sleep(for: .seconds(1))
+                async let minimumSplash: Void = Task.sleep(for: .milliseconds(500))
                 await restoreSession()
                 try? await minimumSplash
-                withAnimation(.easeInOut(duration: 0.45)) {
+                withAnimation(.easeInOut(duration: 0.3)) {
                     isSplashLeaving = true
                 } completion: {
                     isShowingSplash = false
@@ -81,18 +87,34 @@ struct KusiTripApp: App {
         .modelContainer(modelContainer)
     }
 
-    private func handle(_ event: AppEvent) async {
+    private func logIn(_ user: User) {
+        let event = AppEvent.loginSuccess(userUI: UserMapper.toUI(entity: user))
         coordinator.handle(event: event)
-        await favoritesSync.handle(event)
+        Task { await favoritesSync.handle(event) }
     }
 
-    /// Logs the user back in from the Keychain. The splash waits at most a few
-    /// seconds: a cold start on Render can take up to a minute, and in that case
-    /// the restore finishes in the background and swaps the login screen.
+    /// Logs the user back in from the Keychain.
+    /// - With a cached profile the tabs show right away and `GET /auth/me`
+    ///   validates the session in the background (if it was revoked, the app
+    ///   returns to login through `.sessionExpired`).
+    /// - Without one (sessions saved by older versions), the splash waits at
+    ///   most a few seconds: a cold start on Render can take up to a minute, and
+    ///   in that case the restore finishes in the background.
     private func restoreSession() async {
+        let useCase = RestoreSessionUseCase()
+        if let cached = useCase.cachedUser() {
+            logIn(cached)
+            Task {
+                if let user = await useCase.execute() {
+                    coordinator.currentUser = UserMapper.toUI(entity: user)
+                }
+            }
+            return
+        }
+
         let restore = Task { @MainActor in
-            if let user = await RestoreSessionUseCase().execute() {
-                await handle(.loginSuccess(userUI: UserMapper.toUI(entity: user)))
+            if let user = await useCase.execute() {
+                logIn(user)
             }
         }
         await withTaskGroup(of: Void.self) { group in

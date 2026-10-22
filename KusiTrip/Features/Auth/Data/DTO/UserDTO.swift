@@ -1,6 +1,6 @@
 import Foundation
 
-nonisolated struct UserDTO: Decodable, Sendable {
+nonisolated struct UserDTO: Codable, Sendable {
     let id: String
     let name: String
     let surname: String

@@ -125,7 +125,7 @@ Detalles en [Capa de red → NetworkLogger](#networklogger).
 |---|---|---|
 | **Login** | Iniciar sesión con email y contraseña. Ir a registro | `POST /auth/login` |
 | **Registro** | Crear cuenta (nombre, apellido, email, contraseña ≥ 8 caracteres y su confirmación). Entra directo a la app | `POST /auth/register` |
-| **Splash** | Restaura la sesión guardada: si hay token válido, entra sin pedir login | `GET /auth/me` |
+| **Splash** | Si hay sesión guardada, entra directo a las pestañas (~1 s) y valida la sesión en segundo plano | `GET /auth/me` |
 | **Inicio** | Ver categorías, principales destinos y carrusel de actividades destacadas. Marcar favoritos. Deslizar hacia abajo para recargar | `GET /home` |
 | **Destinos** | Listar destinos, filtrar por país con chips y buscar por nombre o país | `GET /destinations` |
 | **Detalle de destino** | Ver las actividades del destino y filtrarlas por categoría. Marcar favoritos | `GET /destinations/:id`, `GET /destinations/:id/activities` |
@@ -139,7 +139,9 @@ Detalles en [Capa de red → NetworkLogger](#networklogger).
 
 Comportamientos transversales:
 
-- **Sesión persistente:** al cerrar y abrir la app no hay que volver a iniciar sesión.
+- **Sesión persistente e inicio instantáneo:** al abrir la app no hay que volver a iniciar sesión, y no se espera al servidor: se muestra el último perfil guardado mientras `/auth/me` valida la sesión. Si la sesión ya no es válida, vuelve al login.
+- **Loader a pantalla completa** al iniciar sesión, crear cuenta, confirmar una reserva y cerrar sesión.
+- **Cerrar sesión es inmediato:** la sesión termina en el teléfono al instante y el token se revoca en el API en segundo plano.
 - **Renovación de token transparente:** el access token dura 15 minutos. Cuando el API responde 401, la app lo renueva con el refresh token y repite la petición sin que el usuario lo note. Si el refresh también falla, vuelve al login.
 - **Favoritos sincronizados:** se guardan al instante en el teléfono y luego se envían al servidor. Al iniciar sesión en otro dispositivo aparecen los mismos.
 - **Errores legibles:** sin conexión, timeout o errores del API (por ejemplo "La fecha de la actividad debe ser posterior a hoy") se muestran en español con un botón **Reintentar**.
@@ -199,6 +201,7 @@ KusiTrip/
 │   ├── Network/               # Única capa que importa Alamofire
 │   │   └── Auth/              # Token en Keychain, authenticator, sesión
 │   ├── SharedModels/          # Activity, Destination, Category, Review (DTO / Domain / UI / Mapper)
+│   ├── Storage/               # KeychainStore genérico (token y perfil)
 │   └── Extensions/            # Colores, precios, fechas ISO 8601, modificadores de vista
 ├── DesignSystem/Components/   # ActivityCard, DestinationCard, RemoteImage, ErrorStateView…
 └── Features/
@@ -281,7 +284,7 @@ Todos los ViewModels y el `AppCoordinator` usan la macro `@Observable` (iOS 17+)
 - **async/await de punta a punta:** `View.task` → ViewModel → UseCase → Repository → `APIClient.send` (que usa `serializingData` de Alamofire). No hay callbacks ni Combine.
 - **Cargas en paralelo con `async let`:** el detalle de actividad pide actividad, relacionadas y opiniones a la vez.
 - **Cancelación estructurada:** las tareas de `.task` se cancelan solas al salir de la pantalla. La búsqueda cancela la anterior en cada tecla y espera 400 ms antes de llamar al API (*debounce*).
-- **Restaurar sesión con límite de tiempo:** el splash espera como máximo 4 s con un `TaskGroup`. Si Render está despertando, la sesión termina de restaurarse en segundo plano y la pantalla cambia sola.
+- **Restaurar sesión sin esperar a la red:** con el perfil guardado en el Keychain, las pestañas aparecen en cuanto termina el splash (500 ms mínimo, para empalmar con la pantalla de lanzamiento del sistema) y `/auth/me` corre en una `Task` aparte. Si no hay perfil guardado (sesiones de versiones anteriores), el splash espera como máximo 4 s con un `TaskGroup`.
 - **`.refreshable`:** en Inicio y Mis reservas se recarga deslizando hacia abajo.
 
 ### EventBus
@@ -298,12 +301,15 @@ actor EventBus {                          // actor: thread-safe sin locks
 | Evento | Lo publica | Lo escuchan |
 |---|---|---|
 | `.loginSuccess(userUI:)` | Login, Registro, restaurar sesión | `AppCoordinator` (muestra los tabs) y `FavoritesSyncService` (descarga favoritos) |
+| `.logoutStarted` | `LogoutUseCase` | `AppCoordinator` (muestra el loader "Cerrando sesión…") |
 | `.logoutRequested` | `LogoutUseCase` | `AppCoordinator` (vuelve al login) y `FavoritesSyncService` (borra favoritos locales) |
-| `.sessionExpired` | `KusiAuthenticator`, cuando el refresh token es rechazado | `AppCoordinator` (borra la sesión y vuelve al login) |
+| `.sessionExpired` | `KusiAuthenticator` (refresh token rechazado) o `AuthRepositoryImpl` (`/auth/me` con sesión revocada) | `AppCoordinator` (borra la sesión y vuelve al login) |
 | `.favoriteToggled(activityId:isFavorite:)` | Tarjetas y detalle al tocar el corazón | `FavoritesSyncService` (lo envía al API) |
 | `.bookingConfirmed(...)` | `BookingViewModel` | — (punto de extensión, por ejemplo para analítica) |
 
 Las vistas se suscriben con el modificador `.onEventBus { event in ... }`, que consume el `AsyncStream` dentro de un `.task`. Al desaparecer la vista, el stream termina y el actor elimina la suscripción.
+
+La raíz de la app tiene dos suscripciones separadas: una para el coordinador y otra para `FavoritesSyncService`. Así, una sincronización de favoritos lenta (llama al API) nunca retrasa la navegación de login o logout.
 
 ### Favoritos: UI optimista + sincronización
 
@@ -330,7 +336,7 @@ Tocar ♥ → SwiftData (al instante, @Query redibuja todas las vistas) → .fav
 | `APIError` | Traduce los fallos a mensajes en español. Si el API responde su envelope `{ error: { code, message } }`, usa ese mensaje. Distingue sin conexión, timeout, 401 y errores de decodificación |
 | `AuthSession` | Dueña de la credencial: mantiene sincronizados el Keychain y el interceptor al iniciar o cerrar sesión |
 | `KusiAuthenticator` | `Authenticator` de Alamofire: agrega `Authorization: Bearer`, y ante un 401 llama a `POST /auth/refresh`. `AuthenticationInterceptor` garantiza **un solo refresh a la vez** y reintenta las peticiones que esperaban. Si el refresh devuelve 401, borra la sesión y publica `.sessionExpired` |
-| `KeychainTokenStore` | Guarda access y refresh token en el Keychain (`AfterFirstUnlockThisDeviceOnly`) |
+| `KeychainTokenStore` | Guarda access y refresh token en el Keychain (`AfterFirstUnlockThisDeviceOnly`), sobre el genérico `KeychainStore<Value: Codable>` de `Core/Storage` |
 | `NetworkLogger` | Ver abajo |
 
 ### NetworkLogger
@@ -349,6 +355,7 @@ Tocar ♥ → SwiftData (al instante, @Query redibuja todas las vistas) → .fav
 | Qué | Dónde | Por qué |
 |---|---|---|
 | Access y refresh token | **Keychain** | Datos sensibles: cifrados por el sistema y sin copia en backups a otros dispositivos |
+| Último perfil del usuario (`UserDTO`) | **Keychain** (`KeychainUserCache`) | Permite abrir la app sin esperar a `/auth/me`. Se borra al cerrar sesión |
 | Favoritos | **SwiftData** (`FavoriteModel`, `@Attribute(.unique) activityId`) | Lectura instantánea y offline. `@Query` hace reactiva la UI |
 | Todo lo demás (catálogo, reservas, perfil) | API | Siempre fresco; no se cachea |
 
@@ -381,6 +388,7 @@ Componentes reutilizables en [`DesignSystem/Components`](KusiTrip/DesignSystem/C
 | `RemoteImage` | `AsyncImage` con placeholder y recorte correcto |
 | `CategoryChipView`, `SearchFieldView`, `StarRatingView`, `PriceTagView`, `PrimaryButton`, `KusiScreenHeader` | Piezas de UI comunes |
 | `ErrorStateView` | Mensaje de error con botón **Reintentar** (async) |
+| `KusiLoadingOverlay` | Loader a pantalla completa: fondo difuminado, logo con anillo animado en los colores de la marca y mensaje. Se usa con `.kusiLoadingOverlay(isPresented:message:)`, bloquea los toques y queda visible al menos 700 ms para no parpadear. Respeta *Reducir movimiento* |
 
 Paleta en `Color+KusiTrip.swift`: `kusiPrimary` (amarillo `#FFC53D`), `kusiAccent` (naranja `#FF6B3D`), `kusiTextPrimary` (azul noche `#1B2A49`), además de fondo, superficie, bordes y rojo de descuento. Modificador `.kusiCard()` para tarjetas con fondo, esquinas y sombra.
 

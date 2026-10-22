@@ -12,6 +12,7 @@ struct LogoutUseCase: Sendable {
     }
 
     func execute() async {
+        await EventBus.shared.send(.logoutStarted)
         await repository.logout()
         await EventBus.shared.send(.logoutRequested)
     }

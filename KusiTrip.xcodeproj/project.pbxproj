@@ -45,6 +45,14 @@
 			);
 			sourceTree = "<group>";
 		};
+		4668BA442F8613AC0010285D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4668BA432F8613AC0010285D /* KusiTrip.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		A1B0C0032F90000000000001 /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
@@ -52,14 +60,6 @@
 				A1B0C0022F90000000000001 /* Prod.xcconfig */,
 			);
 			path = Configuration;
-			sourceTree = "<group>";
-		};
-		4668BA442F8613AC0010285D /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				4668BA432F8613AC0010285D /* KusiTrip.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -393,7 +393,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
-			name = Debug-Dev;
+			name = "Debug-Dev";
 		};
 		A1B0C0052F90000000000001 /* Release-Dev */ = {
 			isa = XCBuildConfiguration;
@@ -450,7 +450,7 @@
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
-			name = Release-Dev;
+			name = "Release-Dev";
 		};
 		A1B0C0062F90000000000001 /* Debug-Dev */ = {
 			isa = XCBuildConfiguration;
@@ -482,7 +482,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
-			name = Debug-Dev;
+			name = "Debug-Dev";
 		};
 		A1B0C0072F90000000000001 /* Release-Dev */ = {
 			isa = XCBuildConfiguration;
@@ -514,7 +514,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
-			name = Release-Dev;
+			name = "Release-Dev";
 		};
 /* End XCBuildConfiguration section */
 
