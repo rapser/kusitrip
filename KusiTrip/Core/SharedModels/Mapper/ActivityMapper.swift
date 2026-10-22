@@ -2,27 +2,24 @@ import Foundation
 
 enum ActivityMapper {
 
-    static let allCategories: [Category] = [
-        .all, .guided, .excursions, .tickets, .gastronomy, .transport, .boat, .free
-    ]
-
     static func toDomain(dto: ActivityDTO) -> Activity {
-        let category = allCategories.first(where: { $0.id == dto.categoryId }) ?? .all
-        return Activity(
+        Activity(
             id: dto.id,
             title: dto.title,
-            description: dto.descriptionText,
+            summary: dto.summary,
+            description: dto.description,
             price: dto.price,
             originalPrice: dto.originalPrice,
+            currency: dto.currency,
             rating: dto.rating,
             reviewCount: dto.reviewCount,
             travelerCount: dto.travelerCount,
-            category: category,
+            category: CategoryMapper.toDomain(dto: dto.category),
             destinationId: dto.destinationId,
-            imageURLs: dto.imageURLs,
+            imageURLs: dto.imageUrls,
             durationMinutes: dto.durationMinutes,
             language: dto.language,
-            cancellationDays: dto.cancellationDays,
+            cancellationDays: dto.freeCancellationDays,
             isFree: dto.isFree,
             meetingPoint: dto.meetingPoint,
             includes: dto.includes
@@ -35,6 +32,8 @@ enum ActivityMapper {
             return Int(((orig - entity.price) / orig) * 100)
         }()
         let durationText: String = {
+            let days = entity.durationMinutes / (24 * 60)
+            if days >= 2 { return "\(days) días" }
             let h = entity.durationMinutes / 60
             let m = entity.durationMinutes % 60
             if h == 0 { return "\(m) min" }
@@ -45,8 +44,8 @@ enum ActivityMapper {
             id: entity.id,
             title: entity.title,
             fullDescription: entity.description,
-            formattedPrice: entity.isFree ? "¡Gratis!" : "S/ \(String(format: "%.2f", entity.price))",
-            formattedOriginalPrice: entity.originalPrice.map { "S/ \(String(format: "%.2f", $0))" },
+            formattedPrice: entity.isFree ? "¡Gratis!" : entity.price.kusiPrice(currency: entity.currency),
+            formattedOriginalPrice: entity.originalPrice.map { $0.kusiPrice(currency: entity.currency) },
             discountPercentage: discountPct,
             ratingValue: entity.rating,
             ratingText: String(format: "%.1f", entity.rating),
@@ -63,7 +62,8 @@ enum ActivityMapper {
             hasFreeCancel: entity.cancellationDays > 0,
             meetingPoint: entity.meetingPoint,
             includes: entity.includes,
-            priceValue: entity.price
+            priceValue: entity.price,
+            currency: entity.currency
         )
     }
 }

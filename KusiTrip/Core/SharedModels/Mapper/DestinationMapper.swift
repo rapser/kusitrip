@@ -8,7 +8,7 @@ enum DestinationMapper {
             name: dto.name,
             country: dto.country,
             continent: dto.continent,
-            imageURL: dto.imageURL,
+            imageURL: dto.imageUrl,
             activityCount: dto.activityCount,
             travelerCount: dto.travelerCount,
             reviewCount: dto.reviewCount,

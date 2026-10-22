@@ -13,6 +13,8 @@ struct HomeView: View {
 
                 if viewModel.isLoading {
                     loadingPlaceholder
+                } else if let error = viewModel.errorMessage, viewModel.destinations.isEmpty {
+                    ErrorStateView(message: error) { await viewModel.load() }
                 } else {
                     destinationsSection
                     categoriesSection
@@ -27,13 +29,14 @@ struct HomeView: View {
         // Yellow behind the status bar, matching the headers of the other tabs
         .background(Color.kusiPrimary, ignoresSafeAreaEdges: .top)
         .task { await viewModel.load() }
+        .refreshable { await viewModel.load() }
         .navigationBarHidden(true)
     }
 
     // MARK: - Hero banner
     private var heroBanner: some View {
         ZStack(alignment: .bottomLeading) {
-            RemoteImage(url: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=1200&q=80")
+            RemoteImage(url: "https://f.civitatis.com/peru/cusco/galeria/machu-picchu.jpg")
                 .frame(height: 260)
 
             Rectangle()
@@ -138,7 +141,7 @@ struct HomeView: View {
                 .padding(.top, 20)
 
             ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(alignment: .top, spacing: 12) {
+                LazyHStack(alignment: .top, spacing: 16) {
                     ForEach(viewModel.featuredActivities) { activity in
                         NavigationLink(value: AppRoute.activityDetail(id: activity.id)) {
                             ActivityCard(
@@ -154,7 +157,8 @@ struct HomeView: View {
                     }
                 }
                 .padding(.horizontal, 16)
-                .padding(.bottom, 4)
+                // Room for the card shadow, which the ScrollView would otherwise clip.
+                .padding(.vertical, 8)
             }
         }
     }

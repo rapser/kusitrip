@@ -1,7 +1,7 @@
 import Foundation
 
 protocol ActivityRepositoryProtocol: Sendable {
-    func fetchActivity(id: String) throws -> Activity
-    func fetchRelated(destinationId: String, excludeId: String) -> [Activity]
-    func fetchReviews(activityId: String) -> [Review]
+    func fetchActivity(id: String) async throws -> Activity
+    func fetchRelated(activityId: String) async throws -> [Activity]
+    func fetchReviews(activityId: String) async throws -> [Review]
 }

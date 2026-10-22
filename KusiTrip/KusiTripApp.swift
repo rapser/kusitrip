@@ -14,7 +14,17 @@ struct KusiTripApp: App {
     @State private var isShowingSplash = true
     @State private var isSplashLeaving = false
 
+    private let modelContainer: ModelContainer
+    private let favoritesSync: FavoritesSyncService
+
     init() {
+        do {
+            modelContainer = try ModelContainer(for: FavoriteModel.self)
+        } catch {
+            fatalError("Could not create the SwiftData container: \(error)")
+        }
+        favoritesSync = FavoritesSyncService(modelContext: modelContainer.mainContext)
+
         let navAppearance = UINavigationBarAppearance()
         navAppearance.configureWithOpaqueBackground()
         navAppearance.backgroundColor = UIColor(Color.kusiPrimary)
@@ -46,7 +56,7 @@ struct KusiTripApp: App {
                     }
                 }
                 .onEventBus { @MainActor event in
-                    coordinator.handle(event: event)
+                    await handle(event)
                 }
 
                 if isShowingSplash {
@@ -58,7 +68,9 @@ struct KusiTripApp: App {
             .preferredColorScheme(.light)
             .task {
                 // Hold the identical frame until the system launch zoom has settled.
-                try? await Task.sleep(for: .seconds(1))
+                async let minimumSplash: Void = Task.sleep(for: .seconds(1))
+                await restoreSession()
+                try? await minimumSplash
                 withAnimation(.easeInOut(duration: 0.45)) {
                     isSplashLeaving = true
                 } completion: {
@@ -66,6 +78,28 @@ struct KusiTripApp: App {
                 }
             }
         }
-        .modelContainer(for: FavoriteModel.self)
+        .modelContainer(modelContainer)
+    }
+
+    private func handle(_ event: AppEvent) async {
+        coordinator.handle(event: event)
+        await favoritesSync.handle(event)
+    }
+
+    /// Logs the user back in from the Keychain. The splash waits at most a few
+    /// seconds: a cold start on Render can take up to a minute, and in that case
+    /// the restore finishes in the background and swaps the login screen.
+    private func restoreSession() async {
+        let restore = Task { @MainActor in
+            if let user = await RestoreSessionUseCase().execute() {
+                await handle(.loginSuccess(userUI: UserMapper.toUI(entity: user)))
+            }
+        }
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask { await restore.value }
+            group.addTask { try? await Task.sleep(for: .seconds(4)) }
+            await group.next()
+            group.cancelAll()
+        }
     }
 }

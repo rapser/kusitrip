@@ -8,6 +8,7 @@ final class DestinationDetailViewModel {
     var filteredActivities: [ActivityUI] = []
     var selectedCategory: String = "all"
     var isLoading: Bool = false
+    var errorMessage: String?
 
     var availableCategories: [CategoryUI] {
         var seen = Set<String>()
@@ -31,15 +32,18 @@ final class DestinationDetailViewModel {
     }
 
     func load(destinationId: String) async {
-        isLoading = true
+        isLoading = destination == nil
+        errorMessage = nil
         defer { isLoading = false }
-        let dests   = useCase.execute()
-        let rawActs = useCase.executeActivities(for: destinationId)
-        if let dest = dests.first(where: { $0.id == destinationId }) {
-            destination = DestinationMapper.toUI(entity: dest)
+        do {
+            async let dest = useCase.executeDestination(id: destinationId)
+            async let rawActs = useCase.executeActivities(for: destinationId)
+            destination = DestinationMapper.toUI(entity: try await dest)
+            activities = try await rawActs.map { ActivityMapper.toUI(entity: $0) }
+            applyFilter()
+        } catch {
+            errorMessage = error.localizedDescription
         }
-        activities = rawActs.map { ActivityMapper.toUI(entity: $0) }
-        applyFilter()
     }
 
     func selectCategory(_ id: String) {

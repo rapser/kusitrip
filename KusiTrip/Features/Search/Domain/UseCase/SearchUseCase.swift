@@ -11,8 +11,9 @@ struct SearchUseCase: Sendable {
         self.repository = repository
     }
 
-    func execute(query: String) -> (activities: [Activity], destinations: [Destination]) {
-        guard query.count >= 2 else { return ([], []) }
-        return repository.search(query: query)
+    func execute(query: String) async throws -> SearchResult {
+        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmed.count >= 2 else { return .empty }
+        return try await repository.search(query: trimmed)
     }
 }

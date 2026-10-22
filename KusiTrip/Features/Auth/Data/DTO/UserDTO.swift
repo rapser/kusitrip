@@ -1,10 +1,10 @@
 import Foundation
 
-struct UserDTO: Sendable {
+nonisolated struct UserDTO: Decodable, Sendable {
     let id: String
-    let email: String
-    let password: String
     let name: String
     let surname: String
+    let email: String
+    /// ISO-8601 date the account was created.
     let memberSince: String
 }

@@ -21,6 +21,8 @@ struct DestinationDetailView: View {
                         .frame(maxWidth: .infinity)
                         .padding(.top, 40)
                         .tint(Color.kusiTextPrimary)
+                } else if let error = viewModel.errorMessage {
+                    ErrorStateView(message: error) { await viewModel.load(destinationId: destinationId) }
                 } else if viewModel.filteredActivities.isEmpty {
                     emptyActivities
                 } else {

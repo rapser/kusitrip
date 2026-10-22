@@ -24,6 +24,7 @@ struct SearchView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Color.kusiPrimary, for: .navigationBar)
         .toolbarBackgroundVisibility(.visible, for: .navigationBar)
+        .task { await viewModel.loadSuggestions() }
     }
 
     // MARK: - Suggestions (empty state)
@@ -65,8 +66,7 @@ struct SearchView: View {
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
-                    ForEach(SampleDestinations.all.prefix(4), id: \.id) { dto in
-                        let dest = DestinationMapper.toUI(entity: DestinationMapper.toDomain(dto: dto))
+                    ForEach(viewModel.featuredDestinations) { dest in
                         NavigationLink(value: AppRoute.destinationDetail(id: dest.id)) {
                             DestinationCard(destination: dest)
                         }
@@ -96,6 +96,9 @@ struct SearchView: View {
     private var resultsSection: some View {
         VStack(alignment: .leading, spacing: 0) {
             let total = viewModel.resultActivities.count + viewModel.resultDestinations.count
+            if let error = viewModel.errorMessage {
+                ErrorStateView(message: error)
+            }
             Text(total == 0 ? "Sin resultados para \"\(viewModel.searchText)\"" : "\(total) resultados para \"\(viewModel.searchText)\"")
                 .font(.subheadline)
                 .foregroundStyle(Color.kusiTextSecondary)
@@ -201,6 +204,6 @@ struct SearchView: View {
     }
 
     private var popularSuggestions: [String] {
-        ["Roma", "París", "Coliseo", "Free tour", "Barcelona", "Londres", "Tokio", "Sagrada Família"]
+        ["Machu Picchu", "Cusco", "Free tour", "Montaña Arcoíris", "Islas Ballestas", "Colca", "Tango", "Cristo Redentor"]
     }
 }

@@ -19,6 +19,8 @@ struct ActivityDetailView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if let activity = viewModel.activity {
                 content(activity)
+            } else if let error = viewModel.errorMessage {
+                ErrorStateView(message: error) { await viewModel.load(activityId: activityId) }
             }
         }
         .background(Color.kusiBackground)
@@ -249,7 +251,7 @@ struct ActivityDetailView: View {
                     .padding(.horizontal, 16)
             } else {
                 ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHStack(spacing: 12) {
+                    LazyHStack(alignment: .top, spacing: 16) {
                         ForEach(viewModel.relatedActivities) { related in
                             NavigationLink(value: AppRoute.activityDetail(id: related.id)) {
                                 ActivityCard(
@@ -262,6 +264,7 @@ struct ActivityDetailView: View {
                         }
                     }
                     .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
                 }
             }
         }

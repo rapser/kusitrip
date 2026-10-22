@@ -1,19 +1,17 @@
 import Foundation
 
 struct CreateBookingUseCase: Sendable {
+    private let repository: any BookingRepositoryProtocol
+
+    init() {
+        self.repository = BookingRepositoryImpl()
+    }
+
+    init(repository: any BookingRepositoryProtocol) {
+        self.repository = repository
+    }
 
     func execute(request: BookingRequest) async throws -> BookingConfirmation {
-        // Simulate processing
-        try await Task.sleep(nanoseconds: 1_000_000_000)
-        let bookingId = "KUSI-\(Int.random(in: 100000...999999))"
-        return BookingConfirmation(
-            id: UUID().uuidString,
-            bookingId: bookingId,
-            activityTitle: request.activityTitle,
-            date: request.date,
-            numberOfPeople: request.numberOfPeople,
-            totalPrice: request.totalPrice,
-            confirmedAt: Date()
-        )
+        try await repository.createBooking(request)
     }
 }

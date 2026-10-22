@@ -11,15 +11,15 @@ struct GetActivityDetailUseCase: Sendable {
         self.repository = repository
     }
 
-    func execute(id: String) throws -> Activity {
-        try repository.fetchActivity(id: id)
+    func execute(id: String) async throws -> Activity {
+        try await repository.fetchActivity(id: id)
     }
 
-    func related(destinationId: String, excludeId: String) -> [Activity] {
-        repository.fetchRelated(destinationId: destinationId, excludeId: excludeId)
+    func related(activityId: String) async throws -> [Activity] {
+        try await repository.fetchRelated(activityId: activityId)
     }
 
-    func reviews(activityId: String) -> [Review] {
-        repository.fetchReviews(activityId: activityId)
+    func reviews(activityId: String) async throws -> [Review] {
+        try await repository.fetchReviews(activityId: activityId)
     }
 }

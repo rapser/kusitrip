@@ -11,11 +11,12 @@ struct GetHomeDataUseCase: Sendable {
         self.repository = repository
     }
 
-    func execute() -> HomeData {
-        HomeData(
-            destinations: repository.fetchDestinations(),
-            featuredActivities: repository.fetchFeaturedActivities(),
-            categories: repository.fetchCategories()
+    func execute() async throws -> HomeData {
+        let home = try await repository.fetchHome()
+        return HomeData(
+            destinations: home.destinations,
+            featuredActivities: home.featuredActivities,
+            categories: [.all] + home.categories
         )
     }
 }

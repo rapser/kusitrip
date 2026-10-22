@@ -1,6 +1,10 @@
 import SwiftUI
 
 struct ActivityCard: View {
+    static let width: CGFloat = 248
+    private static let imageHeight: CGFloat = 160
+    private static let height: CGFloat = 348
+
     let activity: ActivityUI
     var isFavorited: Bool = false
     let onFavorite: (String) -> Void
@@ -10,34 +14,18 @@ struct ActivityCard: View {
             imageSection
             contentSection
         }
+        // Size is fixed before the card background is applied, so neither the
+        // photo nor the background can grow past the cell and overlap its neighbours.
+        .frame(width: Self.width, height: Self.height, alignment: .top)
         .kusiCard()
-        .frame(width: 248)
+        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.kusiBorder))
     }
 
     // MARK: - Image section
     private var imageSection: some View {
         ZStack(alignment: .topTrailing) {
-            AsyncImage(url: URL(string: activity.primaryImageURL)) { phase in
-                switch phase {
-                case .success(let image):
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                case .failure:
-                    Rectangle()
-                        .fill(Color.kusiBorder)
-                        .overlay(
-                            Image(systemName: "photo")
-                                .foregroundStyle(Color.kusiTextSecondary)
-                        )
-                default:
-                    Rectangle()
-                        .fill(Color.kusiBorder.opacity(0.4))
-                        .overlay(ProgressView().tint(Color.kusiTextPrimary))
-                }
-            }
-            .frame(height: 160)
-            .clipped()
+            RemoteImage(url: activity.primaryImageURL)
+                .frame(width: Self.width, height: Self.imageHeight)
 
             // Favorite button
             Button(action: { onFavorite(activity.id) }) {
@@ -71,7 +59,7 @@ struct ActivityCard: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
-        .frame(height: 160)
+        .frame(width: Self.width, height: Self.imageHeight)
     }
 
     // MARK: - Content section
@@ -88,8 +76,7 @@ struct ActivityCard: View {
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .foregroundStyle(Color.kusiTextPrimary)
-                .lineLimit(2)
-                .fixedSize(horizontal: false, vertical: true)
+                .lineLimit(2, reservesSpace: true)
 
             // Rating + duration row
             HStack(spacing: 6) {
@@ -116,6 +103,8 @@ struct ActivityCard: View {
                     .foregroundStyle(Color.kusiTextSecondary)
                 Spacer()
             }
+
+            Spacer(minLength: 0)
 
             Divider()
 
@@ -157,5 +146,6 @@ struct ActivityCard: View {
             }
         }
         .padding(12)
+        .frame(maxHeight: .infinity, alignment: .top)
     }
 }

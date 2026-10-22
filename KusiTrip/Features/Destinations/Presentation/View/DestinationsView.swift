@@ -20,21 +20,21 @@ struct DestinationsView: View {
     private var content: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 0) {
-                // Continent filter
+                // Country filter
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 10) {
-                        ForEach(viewModel.continents, id: \.self) { continent in
-                            Button(continent) {
-                                viewModel.selectedContinent = continent
+                        ForEach(viewModel.countries, id: \.self) { country in
+                            Button(country) {
+                                viewModel.selectedCountry = country
                             }
                             .font(.subheadline)
-                            .fontWeight(viewModel.selectedContinent == continent ? .semibold : .regular)
+                            .fontWeight(viewModel.selectedCountry == country ? .semibold : .regular)
                             .padding(.horizontal, 16)
                             .padding(.vertical, 8)
-                            .background(viewModel.selectedContinent == continent ? Color.kusiPrimary : Color.kusiSurface)
+                            .background(viewModel.selectedCountry == country ? Color.kusiPrimary : Color.kusiSurface)
                             .foregroundStyle(Color.kusiTextPrimary)
                             .clipShape(Capsule())
-                            .overlay(Capsule().stroke(viewModel.selectedContinent == continent ? Color.kusiPrimary : Color.kusiBorder))
+                            .overlay(Capsule().stroke(viewModel.selectedCountry == country ? Color.kusiPrimary : Color.kusiBorder))
                         }
                     }
                     .padding(.horizontal, 16)
@@ -47,6 +47,8 @@ struct DestinationsView: View {
                         .tint(Color.kusiTextPrimary)
                         .frame(maxWidth: .infinity)
                         .padding(.top, 60)
+                } else if let error = viewModel.errorMessage {
+                    ErrorStateView(message: error) { await viewModel.load() }
                 } else if viewModel.filteredDestinations.isEmpty {
                     emptyState
                 } else {
@@ -89,7 +91,7 @@ struct DestinationsView: View {
             Text("No se encontraron destinos")
                 .font(.headline)
                 .foregroundStyle(Color.kusiTextSecondary)
-            Text("Prueba con otro término de búsqueda o continente.")
+            Text("Prueba con otro término de búsqueda o país.")
                 .font(.subheadline)
                 .foregroundStyle(Color.kusiTextSecondary)
                 .multilineTextAlignment(.center)

@@ -6,18 +6,29 @@ final class SearchViewModel {
     var searchText: String = "" { didSet { scheduleSearch() } }
     var resultActivities: [ActivityUI] = []
     var resultDestinations: [DestinationUI] = []
+    var featuredDestinations: [DestinationUI] = []
     var isSearching: Bool = false
     var hasSearched: Bool = false
+    var errorMessage: String?
 
     private let useCase: SearchUseCase
+    private let destinationsUseCase: GetDestinationsUseCase
     private var searchTask: Task<Void, Never>?
 
     init() {
         self.useCase = SearchUseCase()
+        self.destinationsUseCase = GetDestinationsUseCase()
     }
 
-    init(useCase: SearchUseCase) {
+    init(useCase: SearchUseCase, destinationsUseCase: GetDestinationsUseCase) {
         self.useCase = useCase
+        self.destinationsUseCase = destinationsUseCase
+    }
+
+    func loadSuggestions() async {
+        guard featuredDestinations.isEmpty else { return }
+        let destinations = (try? await destinationsUseCase.execute()) ?? []
+        featuredDestinations = destinations.prefix(4).map { DestinationMapper.toUI(entity: $0) }
     }
 
     private func scheduleSearch() {
@@ -26,6 +37,7 @@ final class SearchViewModel {
             resultActivities = []
             resultDestinations = []
             hasSearched = false
+            errorMessage = nil
             return
         }
         searchTask = Task {
@@ -38,10 +50,18 @@ final class SearchViewModel {
 
     private func performSearch() async {
         isSearching = true
+        errorMessage = nil
         defer { isSearching = false }
-        hasSearched = true
-        let results = useCase.execute(query: searchText)
-        resultActivities   = results.activities.map { ActivityMapper.toUI(entity: $0) }
-        resultDestinations = results.destinations.map { DestinationMapper.toUI(entity: $0) }
+        do {
+            let results = try await useCase.execute(query: searchText)
+            guard !Task.isCancelled else { return }
+            resultActivities   = results.activities.map { ActivityMapper.toUI(entity: $0) }
+            resultDestinations = results.destinations.map { DestinationMapper.toUI(entity: $0) }
+            hasSearched = true
+        } catch {
+            guard !Task.isCancelled else { return }
+            errorMessage = error.localizedDescription
+            hasSearched = true
+        }
     }
 }
