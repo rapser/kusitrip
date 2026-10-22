@@ -141,7 +141,7 @@ struct HomeView: View {
                 .padding(.top, 20)
 
             ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(alignment: .top, spacing: 12) {
+                LazyHStack(alignment: .top, spacing: 16) {
                     ForEach(viewModel.featuredActivities) { activity in
                         NavigationLink(value: AppRoute.activityDetail(id: activity.id)) {
                             ActivityCard(
@@ -156,9 +156,12 @@ struct HomeView: View {
                         .buttonStyle(.plain)
                     }
                 }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 4)
+                .scrollTargetLayout()
+                // Room for the card shadow, which the ScrollView would otherwise clip.
+                .padding(.vertical, 8)
             }
+            .contentMargins(.horizontal, 16, for: .scrollContent)
+            .scrollTargetBehavior(.viewAligned)
         }
     }
 

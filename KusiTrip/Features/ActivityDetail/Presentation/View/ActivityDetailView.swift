@@ -251,7 +251,7 @@ struct ActivityDetailView: View {
                     .padding(.horizontal, 16)
             } else {
                 ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHStack(spacing: 12) {
+                    LazyHStack(alignment: .top, spacing: 16) {
                         ForEach(viewModel.relatedActivities) { related in
                             NavigationLink(value: AppRoute.activityDetail(id: related.id)) {
                                 ActivityCard(
@@ -263,8 +263,11 @@ struct ActivityDetailView: View {
                             .buttonStyle(.plain)
                         }
                     }
-                    .padding(.horizontal, 16)
+                    .scrollTargetLayout()
+                    .padding(.vertical, 8)
                 }
+                .contentMargins(.horizontal, 16, for: .scrollContent)
+                .scrollTargetBehavior(.viewAligned)
             }
         }
         .padding(.bottom, 12)
