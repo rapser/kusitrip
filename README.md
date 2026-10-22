@@ -410,6 +410,8 @@ Paleta en `Color+KusiTrip.swift`: `kusiPrimary` (amarillo `#FFC53D`), `kusiAccen
 
 ## Pendientes conocidos
 
+> 🚀 Antes de publicar en la App Store, sigue el checklist [**Salida a producción**](https://github.com/rapser/kusitrip-api-rest/blob/develop/docs/SALIDA-A-PRODUCCION.md) del API: limpiar los datos de prueba de Supabase, cambiar credenciales, permitir eliminar la cuenta desde la app (lo exige Apple) y archivar con el scheme **KusiTrip**.
+
 Elementos de la UI que todavía no están conectados al API o no tienen acción:
 
 - **¿Olvidaste tu contraseña?** (Login): el botón no hace nada; el API aún no tiene ese flujo.
