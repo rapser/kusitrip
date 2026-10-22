@@ -13,20 +13,10 @@ En Xcode, elige el scheme en el selector de arriba (junto al simulador) y pulsa 
 
 ### Ambiente dev: antes de pulsar Run
 
-El scheme **KusiTrip-Dev** necesita el API corriendo en tu Mac. Requiere tener clonado [kusitrip-api-rest](https://github.com/rapser/kusitrip-api-rest) en `~/Downloads/Codigo/kusitrip-api-rest`.
-
-**Solo la primera vez**, en la Terminal:
+El scheme **KusiTrip-Dev** necesita el API corriendo en tu Mac. Abre dos Terminales y déjalas abiertas mientras usas la app:
 
 ```bash
-cd ~/Downloads/Codigo/kusitrip-api-rest
-npm install
-cp .env.development.example .env.development   # luego pon dos valores de `openssl rand -hex 32` en JWT_SECRET y JWT_REFRESH_SECRET
-```
-
-**Cada vez que vayas a usar dev**, abre dos Terminales:
-
-```bash
-# Terminal 1: base de datos local (déjala abierta)
+# Terminal 1: base de datos local
 cd ~/Downloads/Codigo/kusitrip-api-rest
 npm run db:local
 ```
@@ -34,9 +24,8 @@ npm run db:local
 Espera a ver `PGLiteSocketServer listening on {"port":55432,...}`.
 
 ```bash
-# Terminal 2: API (déjala abierta)
+# Terminal 2: API
 cd ~/Downloads/Codigo/kusitrip-api-rest
-npm run db:migrate && npm run db:seed   # solo la primera vez: crea las tablas y carga los datos
 npm run start:dev
 ```
 
@@ -45,6 +34,22 @@ Espera a ver `Nest application successfully started`. Luego, en Xcode, elige **K
 **Para apagar:** `Ctrl + C` en la Terminal 2 (API) y luego en la Terminal 1 (base). Los datos se conservan para la próxima vez.
 
 **Si la app Dev muestra un error de conexión,** revisa que las dos Terminales sigan abiertas y sin errores. Puedes comprobarlo abriendo http://localhost:3000/health en el navegador.
+
+#### Si es la primera vez en esta Mac
+
+Solo si acabas de clonar [kusitrip-api-rest](https://github.com/rapser/kusitrip-api-rest) y todavía no existe `.env.development`. Si ya lo tienes configurado, sáltate esto.
+
+```bash
+cd ~/Downloads/Codigo/kusitrip-api-rest
+npm install
+cp .env.development.example .env.development   # pon dos valores de `openssl rand -hex 32` en JWT_SECRET y JWT_REFRESH_SECRET
+```
+
+Después enciende la base (Terminal 1, como arriba) y, antes de `npm run start:dev`, crea las tablas y carga los datos una sola vez:
+
+```bash
+npm run db:migrate && npm run db:seed
+```
 
 Guía detallada y errores comunes: [`docs/LEVANTAR-EN-LOCAL.md`](https://github.com/rapser/kusitrip-api-rest/blob/develop/docs/LEVANTAR-EN-LOCAL.md) del API.
 
