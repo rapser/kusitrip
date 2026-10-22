@@ -20,8 +20,12 @@ struct HomeView: View {
                     appPromoSection
                 }
             }
+            // Must not extend into the safe area, or it covers the yellow status bar area
+            .background(Color.kusiBackground, ignoresSafeAreaEdges: [])
+            .scrollBounceDisabled()
         }
-        .background(Color.kusiBackground)
+        // Yellow behind the status bar, matching the headers of the other tabs
+        .background(Color.kusiPrimary, ignoresSafeAreaEdges: .top)
         .task { await viewModel.load() }
         .navigationBarHidden(true)
     }
@@ -68,7 +72,6 @@ struct HomeView: View {
             .padding(.bottom, 24)
         }
         .frame(height: 260)
-        .ignoresSafeArea(edges: .top)
     }
 
     // MARK: - Destinations
