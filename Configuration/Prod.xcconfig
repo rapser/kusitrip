@@ -1,0 +1,8 @@
+// Ambiente Prod: API publicado en Render (base de datos en Supabase).
+
+// `//` inicia un comentario en un .xcconfig: `$()` lo evita dentro de la URL.
+API_BASE_URL = https:/$()/kusitrip-api-rest.onrender.com
+
+PRODUCT_BUNDLE_IDENTIFIER = com.rapser.kusitrip
+INFOPLIST_KEY_CFBundleDisplayName = KusiTrip
+ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon

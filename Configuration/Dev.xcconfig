@@ -1,0 +1,10 @@
+// Ambiente Dev: API corriendo en tu Mac (npm run start:dev en kusitrip-api-rest).
+// Bundle propio para convivir en el mismo dispositivo con la app de Prod
+// (Keychain y SwiftData separados).
+
+// `//` inicia un comentario en un .xcconfig: `$()` lo evita dentro de la URL.
+API_BASE_URL = http:/$()/localhost:3000
+
+PRODUCT_BUNDLE_IDENTIFIER = com.rapser.kusitrip.dev
+INFOPLIST_KEY_CFBundleDisplayName = KusiTrip Dev
+ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon-Dev
