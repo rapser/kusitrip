@@ -16,9 +16,7 @@ nonisolated final class AlamofireAPIClient: APIClientProtocol {
     private let decoder = JSONDecoder()
 
     init(configuration: APIConfiguration, authInterceptor: any RequestInterceptor) {
-        let urlConfiguration = URLSessionConfiguration.af.default
-        urlConfiguration.timeoutIntervalForRequest = configuration.timeout
-        self.session = Session(configuration: urlConfiguration)
+        self.session = .kusi(configuration: configuration)
         self.configuration = configuration
         self.authInterceptor = authInterceptor
     }

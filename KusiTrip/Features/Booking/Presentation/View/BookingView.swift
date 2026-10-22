@@ -17,6 +17,7 @@ struct BookingView: View {
         .navigationTitle("Reservar")
         .navigationBarTitleDisplayMode(.inline)
         .task { await viewModel.loadActivity(id: activityId) }
+        .kusiLoadingOverlay(isPresented: viewModel.isLoading, message: "Confirmando tu reserva…")
         .navigationDestination(isPresented: $showConfirmation) {
             if let confirmation = viewModel.confirmation {
                 BookingConfirmationView(confirmation: confirmation)

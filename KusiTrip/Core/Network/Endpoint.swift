@@ -17,6 +17,7 @@ nonisolated struct Endpoint: Sendable {
     let method: Method
     let query: [String: String]
     let body: (any Encodable & Sendable)?
+    let headers: [String: String]
     let requiresAuth: Bool
 
     init(
@@ -24,12 +25,14 @@ nonisolated struct Endpoint: Sendable {
         method: Method = .get,
         query: [String: String] = [:],
         body: (any Encodable & Sendable)? = nil,
+        headers: [String: String] = [:],
         requiresAuth: Bool = false
     ) {
         self.path = path
         self.method = method
         self.query = query
         self.body = body
+        self.headers = headers
         self.requiresAuth = requiresAuth
     }
 
@@ -51,6 +54,9 @@ nonisolated struct Endpoint: Sendable {
         request.method = HTTPMethod(rawValue: method.rawValue)
         request.headers.add(.accept("application/json"))
         request.headers.add(.acceptLanguage("es"))
+        for (name, value) in headers {
+            request.headers.add(name: name, value: value)
+        }
         if let body {
             request.httpBody = try JSONEncoder().encode(body)
             request.headers.add(.contentType("application/json"))
