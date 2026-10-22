@@ -10,7 +10,7 @@ enum ReviewMapper {
             city: dto.city,
             rating: dto.rating,
             comment: dto.comment,
-            date: dto.date,
+            publishedAt: ISO8601DateFormatter.kusiAPI.date(from: dto.publishedAt),
             travelType: dto.travelType
         )
     }
@@ -31,11 +31,18 @@ enum ReviewMapper {
             city: entity.city,
             ratingText: String(format: "%.1f", entity.rating),
             comment: entity.comment,
-            date: entity.date,
+            date: entity.publishedAt.map { displayFormatter.string(from: $0) } ?? "",
             travelTypeLabel: label,
             travelTypeIcon: icon
         )
     }
+
+    private static let displayFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "es_PE")
+        formatter.dateFormat = "d MMM yyyy"
+        return formatter
+    }()
 
     private static func travelInfo(_ type: String) -> (String, String) {
         switch type {

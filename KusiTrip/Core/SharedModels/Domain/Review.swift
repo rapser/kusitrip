@@ -7,6 +7,6 @@ struct Review: Sendable, Identifiable, Hashable {
     let city: String
     let rating: Double
     let comment: String
-    let date: String
+    let publishedAt: Date?
     let travelType: String
 }

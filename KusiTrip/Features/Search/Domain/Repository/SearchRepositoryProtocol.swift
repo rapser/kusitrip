@@ -1,5 +1,5 @@
 import Foundation
 
 protocol SearchRepositoryProtocol: Sendable {
-    func search(query: String) -> (activities: [Activity], destinations: [Destination])
+    func search(query: String) async throws -> SearchResult
 }

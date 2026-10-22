@@ -3,9 +3,11 @@ import Foundation
 struct Activity: Sendable, Identifiable, Hashable {
     let id: String
     let title: String
+    let summary: String
     let description: String
     let price: Double
     let originalPrice: Double?
+    let currency: String
     let rating: Double
     let reviewCount: Int
     let travelerCount: Int

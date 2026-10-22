@@ -16,7 +16,7 @@ struct BookingView: View {
         .background(Color.kusiBackground)
         .navigationTitle("Reservar")
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear { viewModel.loadActivity(id: activityId) }
+        .task { await viewModel.loadActivity(id: activityId) }
         .navigationDestination(isPresented: $showConfirmation) {
             if let confirmation = viewModel.confirmation {
                 BookingConfirmationView(confirmation: confirmation)
@@ -40,9 +40,11 @@ struct BookingView: View {
                     .fontWeight(.semibold)
                     .foregroundStyle(Color.kusiTextPrimary)
                     .lineLimit(2)
-                Label("Cancelación gratuita", systemImage: "checkmark.circle.fill")
-                    .font(.caption)
-                    .foregroundStyle(Color.kusiTextPrimary)
+                if viewModel.hasFreeCancel {
+                    Label("Cancelación gratuita", systemImage: "checkmark.circle.fill")
+                        .font(.caption)
+                        .foregroundStyle(Color.kusiTextPrimary)
+                }
             }
         }
         .padding(16)
@@ -121,7 +123,7 @@ struct BookingView: View {
         VStack(spacing: 16) {
             VStack(spacing: 10) {
                 summaryRow(label: "Precio por persona",
-                           value: "S/ \(String(format: "%.2f", viewModel.pricePerPerson))")
+                           value: viewModel.formattedPricePerPerson)
                 summaryRow(label: "Personas",
                            value: "\(viewModel.numberOfPeople)")
                 Divider()

@@ -20,12 +20,16 @@ final class HomeViewModel {
     }
 
     func load() async {
-        isLoading = true
+        isLoading = destinations.isEmpty
         errorMessage = nil
         defer { isLoading = false }
-        let data = useCase.execute()
-        destinations       = data.destinations.map { DestinationMapper.toUI(entity: $0) }
-        featuredActivities = data.featuredActivities.map { ActivityMapper.toUI(entity: $0) }
-        categories         = data.categories.map { CategoryMapper.toUI(entity: $0) }
+        do {
+            let data = try await useCase.execute()
+            destinations       = data.destinations.map { DestinationMapper.toUI(entity: $0) }
+            featuredActivities = data.featuredActivities.map { ActivityMapper.toUI(entity: $0) }
+            categories         = data.categories.map { CategoryMapper.toUI(entity: $0) }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 }

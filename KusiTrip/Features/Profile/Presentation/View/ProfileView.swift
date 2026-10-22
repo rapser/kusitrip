@@ -55,8 +55,10 @@ struct ProfileView: View {
             Section("Mis viajes") {
                 statRow(icon: "heart.fill", color: Color.kusiDiscountRed,
                         title: "Favoritos", value: "Ver lista")
-                statRow(icon: "ticket.fill", color: Color.kusiTextPrimary,
-                        title: "Reservas", value: "Ver historial")
+                NavigationLink(value: AppRoute.myBookings) {
+                    statRow(icon: "ticket.fill", color: Color.kusiTextPrimary,
+                            title: "Reservas", value: "Ver historial", showsChevron: false)
+                }
                 statRow(icon: "star.fill", color: Color.kusiRatingGold,
                         title: "Mis valoraciones", value: "Ver todas")
             }
@@ -127,7 +129,7 @@ struct ProfileView: View {
     }
 
     // MARK: - Helpers
-    private func statRow(icon: String, color: Color, title: String, value: String) -> some View {
+    private func statRow(icon: String, color: Color, title: String, value: String, showsChevron: Bool = true) -> some View {
         HStack {
             Label(title, systemImage: icon)
                 .foregroundStyle(Color.kusiTextPrimary)
@@ -135,9 +137,11 @@ struct ProfileView: View {
             Text(value)
                 .font(.subheadline)
                 .foregroundStyle(Color.kusiTextSecondary)
-            Image(systemName: "chevron.right")
-                .font(.caption2)
-                .foregroundStyle(Color.kusiBorder)
+            if showsChevron {
+                Image(systemName: "chevron.right")
+                    .font(.caption2)
+                    .foregroundStyle(Color.kusiBorder)
+            }
         }
     }
 

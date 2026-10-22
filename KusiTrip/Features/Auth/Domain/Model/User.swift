@@ -20,13 +20,22 @@ struct User: Sendable, Identifiable, Hashable {
 enum AuthError: LocalizedError {
     case invalidCredentials
     case emptyFields
+    case invalidEmail
+    case passwordTooShort
+    case passwordsDoNotMatch
 
     var errorDescription: String? {
         switch self {
         case .invalidCredentials:
             return "Email o contraseña incorrectos. Por favor, inténtalo de nuevo."
         case .emptyFields:
-            return "Por favor, introduce tu email y contraseña."
+            return "Por favor, completa todos los campos."
+        case .invalidEmail:
+            return "Introduce un email válido."
+        case .passwordTooShort:
+            return "La contraseña debe tener al menos 8 caracteres."
+        case .passwordsDoNotMatch:
+            return "Las contraseñas no coinciden."
         }
     }
 }

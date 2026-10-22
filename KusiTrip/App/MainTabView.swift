@@ -87,13 +87,18 @@ struct MainTabView: View {
                     id: UUID().uuidString,
                     bookingId: bookingId,
                     activityTitle: title,
+                    activityImageURL: "",
                     formattedDate: "-",
                     formattedTime: "-",
                     numberOfPeopleText: "-",
-                    formattedTotal: "S/ \(String(format: "%.2f", price))",
-                    confirmedAt: "-"
+                    formattedTotal: price.kusiPrice(currency: "USD"),
+                    confirmedAt: "-",
+                    isCancelled: false,
+                    isUpcoming: true
                 )
             )
+        case .myBookings:
+            MyBookingsView()
         }
     }
 }

@@ -1,29 +1,24 @@
 import Foundation
 
 struct ActivityRepositoryImpl: ActivityRepositoryProtocol {
+    private let apiClient: any APIClientProtocol
 
-    func fetchActivity(id: String) throws -> Activity {
-        guard let dto = SampleActivities.all.first(where: { $0.id == id }) else {
-            throw ActivityError.notFound
-        }
+    init(apiClient: any APIClientProtocol = AppDependencies.shared.apiClient) {
+        self.apiClient = apiClient
+    }
+
+    func fetchActivity(id: String) async throws -> Activity {
+        let dto = try await apiClient.send(.activity(id: id), as: ActivityDTO.self)
         return ActivityMapper.toDomain(dto: dto)
     }
 
-    func fetchRelated(destinationId: String, excludeId: String) -> [Activity] {
-        SampleActivities.all
-            .filter { $0.destinationId == destinationId && $0.id != excludeId }
-            .prefix(4)
-            .map { ActivityMapper.toDomain(dto: $0) }
+    func fetchRelated(activityId: String) async throws -> [Activity] {
+        let dtos = try await apiClient.send(.relatedActivities(id: activityId), as: [ActivityDTO].self)
+        return dtos.map { ActivityMapper.toDomain(dto: $0) }
     }
 
-    func fetchReviews(activityId: String) -> [Review] {
-        SampleReviews.all
-            .filter { $0.activityId == activityId }
-            .map { ReviewMapper.toDomain(dto: $0) }
+    func fetchReviews(activityId: String) async throws -> [Review] {
+        let dtos = try await apiClient.send(.reviews(activityId: activityId), as: [ReviewDTO].self)
+        return dtos.map { ReviewMapper.toDomain(dto: $0) }
     }
-}
-
-enum ActivityError: LocalizedError {
-    case notFound
-    var errorDescription: String? { "Actividad no encontrada." }
 }

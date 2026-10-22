@@ -23,4 +23,5 @@ struct ActivityUI: Sendable, Identifiable, Hashable {
     let meetingPoint: String
     let includes: [String]
     let priceValue: Double
+    let currency: String
 }

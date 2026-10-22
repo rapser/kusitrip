@@ -19,6 +19,8 @@ struct ActivityDetailView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if let activity = viewModel.activity {
                 content(activity)
+            } else if let error = viewModel.errorMessage {
+                ErrorStateView(message: error) { await viewModel.load(activityId: activityId) }
             }
         }
         .background(Color.kusiBackground)

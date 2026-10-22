@@ -5,4 +5,5 @@ enum AppRoute: Hashable {
     case activityDetail(id: String)
     case booking(activityId: String)
     case bookingConfirmation(bookingId: String, activityTitle: String, totalPrice: Double)
+    case myBookings
 }

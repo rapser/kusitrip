@@ -1,22 +1,17 @@
 import Foundation
 
 struct SearchRepositoryImpl: SearchRepositoryProtocol {
+    private let apiClient: any APIClientProtocol
 
-    func search(query: String) -> (activities: [Activity], destinations: [Destination]) {
-        let q = query.lowercased()
-        let activities = SampleActivities.all
-            .filter {
-                $0.title.lowercased().contains(q) ||
-                $0.descriptionText.lowercased().contains(q)
-            }
-            .map { ActivityMapper.toDomain(dto: $0) }
-        let destinations = SampleDestinations.all
-            .filter {
-                $0.name.lowercased().contains(q) ||
-                $0.country.lowercased().contains(q) ||
-                $0.description.lowercased().contains(q)
-            }
-            .map { DestinationMapper.toDomain(dto: $0) }
-        return (activities, destinations)
+    init(apiClient: any APIClientProtocol = AppDependencies.shared.apiClient) {
+        self.apiClient = apiClient
+    }
+
+    func search(query: String) async throws -> SearchResult {
+        let dto = try await apiClient.send(.search(query: query), as: SearchDTO.self)
+        return SearchResult(
+            activities: dto.activities.map { ActivityMapper.toDomain(dto: $0) },
+            destinations: dto.destinations.map { DestinationMapper.toDomain(dto: $0) }
+        )
     }
 }

@@ -24,7 +24,7 @@ struct LoginView: View {
                 .frame(height: 240)
 
             VStack(spacing: 8) {
-                Image(systemName: "globe.europe.africa.fill")
+                Image(systemName: "globe.americas.fill")
                     .font(.system(size: 52))
                     .foregroundStyle(Color.kusiTextPrimary)
                 Text("Kusi Trip")

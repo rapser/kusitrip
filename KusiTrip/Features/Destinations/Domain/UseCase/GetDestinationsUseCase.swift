@@ -11,11 +11,15 @@ struct GetDestinationsUseCase: Sendable {
         self.repository = repository
     }
 
-    func execute() -> [Destination] {
-        repository.fetchAllDestinations()
+    func execute() async throws -> [Destination] {
+        try await repository.fetchAllDestinations()
     }
 
-    func executeActivities(for destinationId: String) -> [Activity] {
-        repository.fetchActivities(for: destinationId)
+    func executeDestination(id: String) async throws -> Destination {
+        try await repository.fetchDestination(id: id)
+    }
+
+    func executeActivities(for destinationId: String) async throws -> [Activity] {
+        try await repository.fetchActivities(for: destinationId)
     }
 }
