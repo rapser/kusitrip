@@ -13,9 +13,7 @@ nonisolated final class KusiAuthenticator: Authenticator {
     init(configuration: APIConfiguration, tokenStore: any TokenStore) {
         self.configuration = configuration
         self.tokenStore = tokenStore
-        let urlConfiguration = URLSessionConfiguration.af.default
-        urlConfiguration.timeoutIntervalForRequest = configuration.timeout
-        self.refreshSession = Session(configuration: urlConfiguration)
+        self.refreshSession = .kusi(configuration: configuration)
     }
 
     func apply(_ credential: AuthCredential, to urlRequest: inout URLRequest) {

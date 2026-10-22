@@ -13,6 +13,7 @@ Los datos vienen de [kusitrip-api-rest](https://github.com/rapser/kusitrip-api-r
   - `AlamofireAPIClient` (`APIClientProtocol`): envía `Endpoint`s, valida el status y traduce el envelope de error del API a `APIError`.
   - `KusiAuthenticator` + `AuthenticationInterceptor`: agrega el bearer token y, ante un 401, rota el token con `POST /auth/refresh` una sola vez y reintenta las requests en cola.
   - `KeychainTokenStore`: guarda la sesión en el Keychain; al abrir la app se restaura con `GET /auth/me`.
+  - `NetworkLogger` (`EventMonitor` de Alamofire): imprime en la consola de Xcode cada request (método, URL, headers, body) y su response (status, duración, body en JSON formateado). Oculta el `Authorization`, las contraseñas y los tokens, y recorta los bodies de más de 10.000 caracteres. Usa `print` porque `os.Logger` corta los mensajes en ~1 KB; fuera de Xcode esa salida se descarta.
 - Cada feature declara sus endpoints en `Data/Endpoint/Endpoint+<Feature>.swift` y sus repositorios reciben `APIClientProtocol` por inyección (`AppDependencies` es el composition root).
 - Favoritos: SwiftData sigue siendo la fuente local (UI instantánea y offline); `FavoritesSyncService` los sincroniza con `/favorites` escuchando el `EventBus`.
 
