@@ -263,11 +263,9 @@ struct ActivityDetailView: View {
                             .buttonStyle(.plain)
                         }
                     }
-                    .scrollTargetLayout()
+                    .padding(.horizontal, 16)
                     .padding(.vertical, 8)
                 }
-                .contentMargins(.horizontal, 16, for: .scrollContent)
-                .scrollTargetBehavior(.viewAligned)
             }
         }
         .padding(.bottom, 12)

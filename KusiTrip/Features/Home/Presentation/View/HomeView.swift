@@ -156,12 +156,10 @@ struct HomeView: View {
                         .buttonStyle(.plain)
                     }
                 }
-                .scrollTargetLayout()
+                .padding(.horizontal, 16)
                 // Room for the card shadow, which the ScrollView would otherwise clip.
                 .padding(.vertical, 8)
             }
-            .contentMargins(.horizontal, 16, for: .scrollContent)
-            .scrollTargetBehavior(.viewAligned)
         }
     }
 
