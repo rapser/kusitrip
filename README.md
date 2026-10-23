@@ -70,9 +70,27 @@ npm run start:dev
 
 Espera a ver `Nest application successfully started`. Luego, en Xcode, elige **KusiTrip-Dev** y pulsa Run.
 
-**Para apagar:** `Ctrl + C` en la Terminal 2 (API) y luego en la Terminal 1 (base). Los datos se conservan para la próxima vez.
-
 **Si la app Dev muestra un error de conexión,** revisa que las dos Terminales sigan abiertas y sin errores. Puedes comprobarlo abriendo http://localhost:3000/health en el navegador.
+
+#### Apagar la base y el API
+
+Encendidos y sin uso consumen poco (unos 65 MB de RAM entre los dos y 0% de CPU), pero puedes apagarlos cuando no estés probando Dev. Los datos se conservan para la próxima vez.
+
+- **Si tienes las Terminales abiertas:** `Ctrl + C` en la Terminal 2 (API) y luego en la Terminal 1 (base).
+- **Si cerraste las Terminales o no sabes dónde quedaron corriendo**, desde cualquier Terminal:
+
+  ```bash
+  lsof -ti :3000 -sTCP:LISTEN | xargs kill   # el API
+  pkill -INT -f "pglite-server"              # la base
+  ```
+
+Para saber si siguen encendidos:
+
+```bash
+lsof -nP -iTCP:3000,55432 -sTCP:LISTEN   # sin resultados = apagados
+```
+
+Para volver a encenderlos, repite los dos comandos de arriba (`npm run db:local` y `npm run start:dev`).
 
 #### Si es la primera vez en esta Mac
 
