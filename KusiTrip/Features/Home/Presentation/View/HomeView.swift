@@ -6,46 +6,82 @@ struct HomeView: View {
     @Query private var favorites: [FavoriteModel]
     @Environment(\.modelContext) private var modelContext
 
-    var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 0) {
-                heroBanner
+    /// 0 with the photo fully shown, 1 once it has scrolled under the
+    /// navigation bar and turned into it.
+    @State private var collapseProgress: CGFloat = 0
 
-                Group {
-                    if viewModel.isLoading {
-                        HomeSkeletonView()
+    private static let heroHeight: CGFloat = 300
+
+    var body: some View {
+        GeometryReader { proxy in
+            // Bottom edge of the navigation bar, which the photo collapses into.
+            let barBottom = proxy.safeAreaInsets.top
+
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 0) {
+                    heroBanner
+
+                    Group {
+                        if viewModel.isLoading {
+                            HomeSkeletonView()
+                                .transition(.opacity)
+                        } else if let error = viewModel.errorMessage, viewModel.destinations.isEmpty {
+                            ErrorStateView(message: error) { await viewModel.load() }
+                                .transition(.opacity)
+                        } else {
+                            VStack(alignment: .leading, spacing: 0) {
+                                destinationsSection
+                                categoriesSection
+                                featuredSection
+                                appPromoSection
+                            }
                             .transition(.opacity)
-                    } else if let error = viewModel.errorMessage, viewModel.destinations.isEmpty {
-                        ErrorStateView(message: error) { await viewModel.load() }
-                            .transition(.opacity)
-                    } else {
-                        VStack(alignment: .leading, spacing: 0) {
-                            destinationsSection
-                            categoriesSection
-                            featuredSection
-                            appPromoSection
                         }
-                        .transition(.opacity)
                     }
+                    .animation(.easeInOut(duration: 0.35), value: viewModel.isLoading)
                 }
-                .animation(.easeInOut(duration: 0.35), value: viewModel.isLoading)
+                .scrollBounceDisabled()
             }
-            .scrollBounceDisabled()
+            // The photo runs under the status and navigation bars.
+            .ignoresSafeArea(edges: .top)
+            .scrollEdgeEffectHidden(true, for: .top)
+            .onScrollGeometryChange(for: CGFloat.self) { geometry in
+                let progress = geometry.contentOffset.y / (Self.heroHeight - barBottom)
+                // Hundredths are smooth to the eye and skip redundant redraws.
+                return (min(max(progress, 0), 1) * 100).rounded() / 100
+            } action: { _, progress in
+                collapseProgress = progress
+            }
         }
-        // Yellow only behind the status bar, matching the headers of the other
-        // tabs; the rest of the screen, including below short content, stays light.
-        .background(Color.kusiBackground, ignoresSafeAreaEdges: [])
-        .background(Color.kusiPrimary, ignoresSafeAreaEdges: .top)
+        .background(Color.kusiBackground)
         .task { await viewModel.load() }
         .refreshable { await viewModel.load() }
-        .navigationBarHidden(true)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text("KusiTrip")
+                    .font(.headline)
+                    .foregroundStyle(Color.kusiTextPrimary)
+                    .opacity(collapseProgress)
+            }
+            .sharedBackgroundVisibility(.hidden)
+        }
+        // Until the photo has fully turned yellow the bar stays transparent;
+        // from then on it is the same solid bar as the other tabs.
+        .toolbarBackground(Color.kusiPrimary, for: .navigationBar)
+        .toolbarBackgroundVisibility(collapseProgress < 1 ? .hidden : .visible, for: .navigationBar)
     }
 
     // MARK: - Hero banner
     private var heroBanner: some View {
         ZStack(alignment: .bottomLeading) {
             RemoteImage(url: "https://f.civitatis.com/peru/cusco/galeria/machu-picchu.jpg")
-                .frame(height: 260)
+                .frame(height: Self.heroHeight)
+                // Pulling down past the top stretches the photo upward.
+                .visualEffect { content, geometry in
+                    let pull = max(geometry.frame(in: .scrollView).minY, 0)
+                    return content.scaleEffect(1 + pull / Self.heroHeight, anchor: .bottom)
+                }
 
             Rectangle()
                 .fill(
@@ -55,7 +91,7 @@ struct HomeView: View {
                         endPoint: .top
                     )
                 )
-                .frame(height: 260)
+                .frame(height: Self.heroHeight)
 
             VStack(alignment: .leading, spacing: 6) {
                 Text("LLENA TU VIAJE")
@@ -81,8 +117,15 @@ struct HomeView: View {
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 24)
+            // Gone by the time the photo reaches the bar.
+            .opacity(Double(1 - collapseProgress * 1.6))
+
+            // The photo turns into the bar's yellow as it collapses.
+            Color.kusiPrimary
+                .opacity(collapseProgress)
+                .allowsHitTesting(false)
         }
-        .frame(height: 260)
+        .frame(height: Self.heroHeight)
     }
 
     // MARK: - Destinations
