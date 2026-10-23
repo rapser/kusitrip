@@ -10,9 +10,11 @@ struct KusiLoadingOverlay: View {
     private static let slowHintDelay: Duration = .seconds(6)
     private static let slowHint = "Está tardando más de lo habitual. Puede demorar hasta un minuto."
 
+    /// One full turn of the ring, and one full grow-and-shrink of the logo.
+    private static let spinPeriod: TimeInterval = 0.9
+    private static let pulsePeriod: TimeInterval = 1.6
+
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var isSpinning = false
-    @State private var isPulsing = false
     @State private var showsSlowHint = false
 
     var body: some View {
@@ -23,28 +25,36 @@ struct KusiLoadingOverlay: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 22) {
-                ZStack {
-                    Circle()
-                        .stroke(Color.kusiPrimary.opacity(0.25), lineWidth: 5)
+                // Driven by the clock rather than a repeatForever animation, which
+                // SwiftUI can drop when the overlay appears inside a NavigationStack.
+                TimelineView(.animation(paused: reduceMotion)) { context in
+                    let time = context.date.timeIntervalSinceReferenceDate
+                    let spin = time.truncatingRemainder(dividingBy: Self.spinPeriod) / Self.spinPeriod
+                    let pulse = reduceMotion ? 1 : 1.01 + 0.05 * sin(2 * .pi * time / Self.pulsePeriod)
 
-                    Circle()
-                        .trim(from: 0, to: 0.72)
-                        .stroke(
-                            AngularGradient(
-                                colors: [Color.kusiPrimary.opacity(0), Color.kusiPrimary, Color.kusiAccent],
-                                center: .center
-                            ),
-                            style: StrokeStyle(lineWidth: 5, lineCap: .round)
-                        )
-                        .rotationEffect(.degrees(isSpinning ? 360 : 0))
+                    ZStack {
+                        Circle()
+                            .stroke(Color.kusiPrimary.opacity(0.25), lineWidth: 5)
 
-                    Image(.launchLogo)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 64, height: 64)
-                        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                        .shadow(color: Color.kusiTextPrimary.opacity(0.18), radius: 8, y: 4)
-                        .scaleEffect(isPulsing ? 1.06 : 0.96)
+                        Circle()
+                            .trim(from: 0, to: 0.72)
+                            .stroke(
+                                AngularGradient(
+                                    colors: [Color.kusiPrimary.opacity(0), Color.kusiPrimary, Color.kusiAccent],
+                                    center: .center
+                                ),
+                                style: StrokeStyle(lineWidth: 5, lineCap: .round)
+                            )
+                            .rotationEffect(.degrees(reduceMotion ? 0 : spin * 360))
+
+                        Image(.launchLogo)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 64, height: 64)
+                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                            .shadow(color: Color.kusiTextPrimary.opacity(0.18), radius: 8, y: 4)
+                            .scaleEffect(pulse)
+                    }
                 }
                 .frame(width: 104, height: 104)
 
@@ -79,15 +89,6 @@ struct KusiLoadingOverlay: View {
             try? await Task.sleep(for: Self.slowHintDelay)
             guard !Task.isCancelled else { return }
             withAnimation(.easeInOut(duration: 0.3)) { showsSlowHint = true }
-        }
-        .onAppear {
-            guard !reduceMotion else { return }
-            withAnimation(.linear(duration: 0.9).repeatForever(autoreverses: false)) {
-                isSpinning = true
-            }
-            withAnimation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true)) {
-                isPulsing = true
-            }
         }
     }
 }
