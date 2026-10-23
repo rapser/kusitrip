@@ -11,22 +11,30 @@ struct HomeView: View {
             VStack(alignment: .leading, spacing: 0) {
                 heroBanner
 
-                if viewModel.isLoading {
-                    loadingPlaceholder
-                } else if let error = viewModel.errorMessage, viewModel.destinations.isEmpty {
-                    ErrorStateView(message: error) { await viewModel.load() }
-                } else {
-                    destinationsSection
-                    categoriesSection
-                    featuredSection
-                    appPromoSection
+                Group {
+                    if viewModel.isLoading {
+                        HomeSkeletonView()
+                            .transition(.opacity)
+                    } else if let error = viewModel.errorMessage, viewModel.destinations.isEmpty {
+                        ErrorStateView(message: error) { await viewModel.load() }
+                            .transition(.opacity)
+                    } else {
+                        VStack(alignment: .leading, spacing: 0) {
+                            destinationsSection
+                            categoriesSection
+                            featuredSection
+                            appPromoSection
+                        }
+                        .transition(.opacity)
+                    }
                 }
+                .animation(.easeInOut(duration: 0.35), value: viewModel.isLoading)
             }
-            // Must not extend into the safe area, or it covers the yellow status bar area
-            .background(Color.kusiBackground, ignoresSafeAreaEdges: [])
             .scrollBounceDisabled()
         }
-        // Yellow behind the status bar, matching the headers of the other tabs
+        // Yellow only behind the status bar, matching the headers of the other
+        // tabs; the rest of the screen, including below short content, stays light.
+        .background(Color.kusiBackground, ignoresSafeAreaEdges: [])
         .background(Color.kusiPrimary, ignoresSafeAreaEdges: .top)
         .task { await viewModel.load() }
         .refreshable { await viewModel.load() }
@@ -191,19 +199,5 @@ struct HomeView: View {
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .padding(16)
         .padding(.bottom, 8)
-    }
-
-    // MARK: - Loading placeholder
-    private var loadingPlaceholder: some View {
-        VStack(spacing: 16) {
-            ProgressView()
-                .scaleEffect(1.4)
-                .tint(Color.kusiTextPrimary)
-            Text("Cargando destinos...")
-                .font(.subheadline)
-                .foregroundStyle(Color.kusiTextSecondary)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.top, 60)
     }
 }

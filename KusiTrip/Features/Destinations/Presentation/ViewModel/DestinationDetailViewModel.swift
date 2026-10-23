@@ -7,7 +7,8 @@ final class DestinationDetailViewModel {
     var activities: [ActivityUI] = []
     var filteredActivities: [ActivityUI] = []
     var selectedCategory: String = "all"
-    var isLoading: Bool = false
+    // True from the start, so the first frame already shows the skeleton.
+    var isLoading: Bool = true
     var errorMessage: String?
 
     var availableCategories: [CategoryUI] {

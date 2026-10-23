@@ -8,27 +8,31 @@ struct DestinationDetailView: View {
 
     var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 0) {
-                if let dest = viewModel.destination {
-                    heroSection(dest)
-                    infoSection(dest)
-                }
-
-                categoryFilters
-
+            Group {
                 if viewModel.isLoading {
-                    ProgressView()
-                        .frame(maxWidth: .infinity)
-                        .padding(.top, 40)
-                        .tint(Color.kusiTextPrimary)
-                } else if let error = viewModel.errorMessage {
-                    ErrorStateView(message: error) { await viewModel.load(destinationId: destinationId) }
-                } else if viewModel.filteredActivities.isEmpty {
-                    emptyActivities
+                    DestinationDetailSkeletonView()
+                        .transition(.opacity)
                 } else {
-                    activitiesList
+                    VStack(alignment: .leading, spacing: 0) {
+                        if let dest = viewModel.destination {
+                            heroSection(dest)
+                            infoSection(dest)
+                        }
+
+                        categoryFilters
+
+                        if let error = viewModel.errorMessage {
+                            ErrorStateView(message: error) { await viewModel.load(destinationId: destinationId) }
+                        } else if viewModel.filteredActivities.isEmpty {
+                            emptyActivities
+                        } else {
+                            activitiesList
+                        }
+                    }
+                    .transition(.opacity)
                 }
             }
+            .animation(.easeInOut(duration: 0.35), value: viewModel.isLoading)
         }
         .background(Color.kusiBackground)
         .navigationBarTitleDisplayMode(.inline)
@@ -147,15 +151,9 @@ private struct ActivityRowCard: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            AsyncImage(url: URL(string: activity.primaryImageURL)) { phase in
-                switch phase {
-                case .success(let image): image.resizable().aspectRatio(contentMode: .fill)
-                default: Color.kusiBorder.overlay(ProgressView().tint(Color.kusiTextPrimary))
-                }
-            }
-            .frame(width: 100, height: 90)
-            .clipped()
-            .clipShape(RoundedRectangle(cornerRadius: 10))
+            RemoteImage(url: activity.primaryImageURL)
+                .frame(width: 100, height: 90)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
 
             VStack(alignment: .leading, spacing: 5) {
                 Text(activity.categoryLabel)

@@ -5,22 +5,8 @@ struct DestinationCard: View {
 
     var body: some View {
         ZStack(alignment: .bottom) {
-            AsyncImage(url: URL(string: destination.imageURL)) { phase in
-                switch phase {
-                case .success(let image):
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                case .failure:
-                    Rectangle().fill(Color.kusiBorder)
-                default:
-                    Rectangle()
-                        .fill(Color.kusiBorder.opacity(0.4))
-                        .overlay(ProgressView().tint(Color.kusiTextPrimary))
-                }
-            }
-            .frame(width: 160, height: 200)
-            .clipped()
+            RemoteImage(url: destination.imageURL)
+                .frame(width: 160, height: 200)
 
             LinearGradient(
                 colors: [.clear, .black.opacity(0.72)],
