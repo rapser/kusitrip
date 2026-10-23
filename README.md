@@ -357,6 +357,7 @@ Tocar ♥ → SwiftData (al instante, @Query redibuja todas las vistas) → .fav
 | Access y refresh token | **Keychain** | Datos sensibles: cifrados por el sistema y sin copia en backups a otros dispositivos |
 | Último perfil del usuario (`UserDTO`) | **Keychain** (`KeychainUserCache`) | Permite abrir la app sin esperar a `/auth/me`. Se borra al cerrar sesión |
 | Favoritos | **SwiftData** (`FavoriteModel`, `@Attribute(.unique) activityId`) | Lectura instantánea y offline. `@Query` hace reactiva la UI |
+| Fotos del catálogo | **Memoria** (`NSCache`, 100 MB) y **disco** (`URLCache`, 200 MB) en `RemoteImageLoader` | Una foto ya vista aparece al instante, también tras reabrir la app. Varias vistas que piden la misma foto comparten una sola descarga, y esa descarga sigue aunque la vista se redibuje |
 | Todo lo demás (catálogo, reservas, perfil) | API | Siempre fresco; no se cachea |
 
 Dev y Prod tienen bundle IDs distintos, así que cada app tiene su propio Keychain y su propia base SwiftData.
@@ -385,7 +386,7 @@ Componentes reutilizables en [`DesignSystem/Components`](KusiTrip/DesignSystem/C
 |---|---|
 | `ActivityCard` | Tarjeta de actividad para carruseles: foto, categoría, título, valoración, precio y favorito. Tamaño fijo (248 × 348) para que las tarjetas no se superpongan |
 | `DestinationCard` | Tarjeta de destino con foto y número de actividades |
-| `RemoteImage` | `AsyncImage` con recorte correcto: mientras descarga muestra un bloque con brillo y la foto aparece con un fundido |
+| `RemoteImage` | Foto remota con recorte correcto. Mientras descarga muestra un bloque con brillo, la foto aparece con un fundido y, si falla, reintenta dos veces (a 1 s y 3 s) antes de mostrar el ícono de "sin foto". Descarga con `RemoteImageLoader` |
 | `CategoryChipView`, `SearchFieldView`, `StarRatingView`, `PriceTagView`, `PrimaryButton`, `KusiScreenHeader` | Piezas de UI comunes |
 | `ErrorStateView` | Mensaje de error con botón **Reintentar** (async) |
 | `KusiLoadingOverlay` | Loader a pantalla completa: fondo difuminado, logo con anillo animado en los colores de la marca y mensaje. Se usa con `.kusiLoadingOverlay(isPresented:message:)`, bloquea los toques y queda visible al menos 700 ms para no parpadear. Respeta *Reducir movimiento* |
