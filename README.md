@@ -8,6 +8,8 @@ App iOS de visitas guiadas y excursiones en español por Perú y Sudamérica: Cu
 - **SwiftData** para favoritos offline y **Keychain** para la sesión
 - Backend: [kusitrip-api-rest](https://github.com/rapser/kusitrip-api-rest) (NestJS + Prisma + PostgreSQL en Supabase, desplegado en Render)
 
+Versión actual: **1.0.0 (build 2)**. Los cambios de cada versión están en el [CHANGELOG](CHANGELOG.md).
+
 ## Contenido
 
 1. [Requisitos](#requisitos)
@@ -22,7 +24,8 @@ App iOS de visitas guiadas y excursiones en español por Perú y Sudamérica: Cu
 10. [Principios SOLID](#principios-solid)
 11. [Design System](#design-system)
 12. [Ambientes](#ambientes)
-13. [Pendientes conocidos](#pendientes-conocidos)
+13. [Versiones y TestFlight](#versiones-y-testflight)
+14. [Pendientes conocidos](#pendientes-conocidos)
 
 ---
 
@@ -144,7 +147,7 @@ Detalles en [Capa de red → NetworkLogger](#networklogger).
 | **Login** | Iniciar sesión con email y contraseña. Ir a registro | `POST /auth/login` |
 | **Registro** | Crear cuenta (nombre, apellido, email, contraseña ≥ 8 caracteres y su confirmación). Entra directo a la app | `POST /auth/register` |
 | **Splash** | Si hay sesión guardada, entra directo a las pestañas (~1 s) y valida la sesión en segundo plano | `GET /auth/me` |
-| **Inicio** | Ver categorías, principales destinos y carrusel de actividades destacadas. Marcar favoritos. Deslizar hacia abajo para recargar | `GET /home` |
+| **Inicio** | Ver categorías, principales destinos y carrusel de actividades destacadas. Marcar favoritos. Deslizar hacia abajo para recargar. Al deslizar, la foto de portada se convierte en la barra de navegación, y vuelve a aparecer al subir | `GET /home` |
 | **Destinos** | Listar destinos, filtrar por país con chips y buscar por nombre o país | `GET /destinations` |
 | **Detalle de destino** | Ver las actividades del destino y filtrarlas por categoría. Marcar favoritos | `GET /destinations/:id`, `GET /destinations/:id/activities` |
 | **Detalle de actividad** | Galería de fotos, valoración, duración, idioma, punto de encuentro, qué incluye, cancelación gratuita, opiniones y actividades relacionadas. Marcar favorito. Botón **Reservar** | `GET /activities/:id`, `/related`, `/reviews` |
@@ -425,6 +428,29 @@ Paleta en `Color+KusiTrip.swift`: `kusiPrimary` (amarillo `#FFC53D`), `kusiAccen
 - Los valores de cada ambiente están en [`Configuration/Dev.xcconfig`](Configuration/Dev.xcconfig) y [`Configuration/Prod.xcconfig`](Configuration/Prod.xcconfig): URL del API, bundle ID, nombre visible e ícono. `API_BASE_URL` llega al código vía `Kusi-Info.plist`. Para agregar un ambiente (por ejemplo QA), se crea otro `.xcconfig` con su configuración y su scheme.
 - Render (plan Free) se duerme sin uso: la primera petición puede tardar hasta ~2 min.
 - En un iPhone físico, `localhost` es el propio teléfono: para Dev cambia `API_BASE_URL` en `Dev.xcconfig` por la IP de tu Mac (por ejemplo `http:/$()/192.168.1.20:3000`; el `$()` evita que `//` se lea como comentario).
+
+---
+
+## Versiones y TestFlight
+
+La versión y el build están en el proyecto, en las cuatro configuraciones (`Debug`, `Release`, `Debug-Dev` y `Release-Dev`):
+
+| Ajuste | Qué es | Valor actual |
+|---|---|---|
+| `MARKETING_VERSION` | Versión que ve el usuario en la App Store | `1.0.0` |
+| `CURRENT_PROJECT_VERSION` | Número de build. Cada subida a App Store Connect necesita uno distinto | `2` |
+
+Para publicar una versión nueva:
+
+1. Anota los cambios en el [CHANGELOG](CHANGELOG.md): pasa lo que esté en *Sin publicar* a una sección con la versión, el build y la fecha.
+2. Sube `MARKETING_VERSION` si hay cambios visibles para el usuario, siguiendo *Semantic Versioning*:
+   - Corrección: `1.0.0` → `1.0.1`.
+   - Funcionalidad nueva: `1.0.0` → `1.1.0`.
+   - Cambio grande: `1.0.0` → `2.0.0`.
+3. Sube `CURRENT_PROJECT_VERSION` por encima del último build de esa versión en App Store Connect. App Store Connect rechaza un build repetido. Si al distribuir dejas activada *Manage Version and Build Number*, Xcode lo ajusta solo.
+4. Archiva con el scheme **KusiTrip** (**Product → Archive**) y súbelo desde el Organizer.
+
+`Kusi-Info.plist` declara `ITSAppUsesNonExemptEncryption = false`. La app solo usa HTTPS y el Keychain, que son la encriptación del sistema, así que App Store Connect no pide la documentación de exportación en cada build.
 
 ---
 
