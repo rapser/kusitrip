@@ -385,10 +385,11 @@ Componentes reutilizables en [`DesignSystem/Components`](KusiTrip/DesignSystem/C
 |---|---|
 | `ActivityCard` | Tarjeta de actividad para carruseles: foto, categoría, título, valoración, precio y favorito. Tamaño fijo (248 × 348) para que las tarjetas no se superpongan |
 | `DestinationCard` | Tarjeta de destino con foto y número de actividades |
-| `RemoteImage` | `AsyncImage` con placeholder y recorte correcto |
+| `RemoteImage` | `AsyncImage` con recorte correcto: mientras descarga muestra un bloque con brillo y la foto aparece con un fundido |
 | `CategoryChipView`, `SearchFieldView`, `StarRatingView`, `PriceTagView`, `PrimaryButton`, `KusiScreenHeader` | Piezas de UI comunes |
 | `ErrorStateView` | Mensaje de error con botón **Reintentar** (async) |
 | `KusiLoadingOverlay` | Loader a pantalla completa: fondo difuminado, logo con anillo animado en los colores de la marca y mensaje. Se usa con `.kusiLoadingOverlay(isPresented:message:)`, bloquea los toques y queda visible al menos 700 ms para no parpadear. Respeta *Reducir movimiento* |
+| `SkeletonBlock` + `.kusiShimmer()` | Skeleton de carga: bloques grises con la forma del contenido y un brillo que los recorre. `.kusiShimmer()` se aplica una vez al contenedor para que el brillo vaya sincronizado. El Home lo usa en `HomeSkeletonView` mientras llegan los datos. Respeta *Reducir movimiento* |
 
 Paleta en `Color+KusiTrip.swift`: `kusiPrimary` (amarillo `#FFC53D`), `kusiAccent` (naranja `#FF6B3D`), `kusiTextPrimary` (azul noche `#1B2A49`), además de fondo, superficie, bordes y rojo de descuento. Modificador `.kusiCard()` para tarjetas con fondo, esquinas y sombra.
 

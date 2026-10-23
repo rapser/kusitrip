@@ -6,7 +6,8 @@ final class HomeViewModel {
     var destinations: [DestinationUI] = []
     var featuredActivities: [ActivityUI] = []
     var categories: [CategoryUI] = []
-    var isLoading: Bool = false
+    // True from the start, so the first frame already shows the skeleton.
+    var isLoading: Bool = true
     var errorMessage: String?
 
     private let useCase: GetHomeDataUseCase

@@ -9,19 +9,21 @@ struct RemoteImage: View {
         Rectangle()
             .fill(Color.kusiBorder.opacity(0.4))
             .overlay {
-                AsyncImage(url: URL(string: url)) { phase in
+                // The transaction fades the photo in instead of popping it.
+                AsyncImage(url: URL(string: url), transaction: Transaction(animation: .easeOut(duration: 0.3))) { phase in
                     switch phase {
                     case .success(let image):
                         image
                             .resizable()
                             .scaledToFill()
+                            .transition(.opacity)
                     case .failure:
                         Image(systemName: "photo")
                             .font(.title2)
                             .foregroundStyle(Color.kusiTextSecondary)
                     default:
-                        ProgressView()
-                            .tint(Color.kusiTextPrimary)
+                        Color.kusiBorder.opacity(0.3)
+                            .kusiShimmer()
                     }
                 }
                 .allowsHitTesting(false)
