@@ -15,6 +15,22 @@ struct SkeletonBlock: View {
     }
 }
 
+/// Horizontal row of skeleton blocks that, like the real carousels, runs past
+/// the screen edge. The disabled ScrollView keeps the overflow from widening
+/// the page.
+struct SkeletonCarousel<Content: View>: View {
+    var spacing: CGFloat = 12
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: spacing) { content }
+                .padding(.horizontal, 16)
+        }
+        .scrollDisabled(true)
+    }
+}
+
 extension View {
     /// Sweeps a soft highlight across the view's opaque shapes while it is
     /// visible. Static with Reduce Motion.

@@ -4,7 +4,8 @@ import Foundation
 @Observable
 final class MyBookingsViewModel {
     var bookings: [BookingConfirmationUI] = []
-    var isLoading: Bool = false
+    // True from the start, so the first frame already shows the skeleton.
+    var isLoading: Bool = true
     var errorMessage: String?
 
     private let useCase: GetBookingsUseCase

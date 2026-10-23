@@ -7,21 +7,21 @@ struct HomeSkeletonView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             sectionHeader(titleWidth: 190, trailingWidth: 60)
-            row(spacing: 12) {
+            SkeletonCarousel(spacing: 12) {
                 ForEach(0..<3, id: \.self) { _ in
                     SkeletonBlock(width: 160, height: 200, cornerRadius: 14)
                 }
             }
 
             sectionHeader(titleWidth: 170)
-            row(spacing: 10) {
+            SkeletonCarousel(spacing: 10) {
                 ForEach([128, 104, 140, 96], id: \.self) { width in
                     SkeletonBlock(width: CGFloat(width), height: 40, cornerRadius: 20)
                 }
             }
 
             sectionHeader(titleWidth: 200)
-            row(spacing: 16) {
+            SkeletonCarousel(spacing: 16) {
                 ForEach(0..<2, id: \.self) { _ in activityCard }
             }
             .padding(.vertical, 8)
@@ -43,16 +43,6 @@ struct HomeSkeletonView: View {
         .padding(.horizontal, 16)
         .padding(.top, 20)
         .padding(.bottom, 12)
-    }
-
-    /// A horizontal row that, like the real carousels, runs past the screen edge.
-    /// The disabled ScrollView keeps the overflow from widening the page.
-    private func row(spacing: CGFloat, @ViewBuilder content: () -> some View) -> some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: spacing) { content() }
-                .padding(.horizontal, 16)
-        }
-        .scrollDisabled(true)
     }
 
     private var activityCard: some View {

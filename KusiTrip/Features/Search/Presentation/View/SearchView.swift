@@ -12,12 +12,16 @@ struct SearchView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     if viewModel.searchText.isEmpty {
                         suggestionsSection
-                    } else if viewModel.isSearching {
-                        searchingIndicator
-                    } else if viewModel.hasSearched {
+                    } else if viewModel.isSearching || !viewModel.hasSearched {
+                        // Also while the 400 ms debounce waits to send the query.
+                        searchingSkeleton
+                            .transition(.opacity)
+                    } else {
                         resultsSection
+                            .transition(.opacity)
                     }
                 }
+                .animation(.easeInOut(duration: 0.3), value: viewModel.isSearching)
             }
         }
         .background(Color.kusiBackground)
@@ -75,21 +79,47 @@ struct SearchView: View {
                 }
                 .padding(.horizontal, 16)
             }
+            .overlay(alignment: .leading) {
+                if viewModel.isLoadingSuggestions {
+                    SkeletonCarousel(spacing: 12) {
+                        ForEach(0..<3, id: \.self) { _ in
+                            SkeletonBlock(width: 160, height: 200, cornerRadius: 14)
+                        }
+                    }
+                    .frame(height: 200)
+                    .kusiShimmer()
+                    .transition(.opacity)
+                }
+            }
+            .frame(minHeight: viewModel.isLoadingSuggestions ? 200 : nil)
+            .animation(.easeInOut(duration: 0.35), value: viewModel.isLoadingSuggestions)
             .padding(.bottom, 20)
         }
     }
 
     // MARK: - Searching
-    private var searchingIndicator: some View {
-        HStack {
-            ProgressView()
-                .tint(Color.kusiTextPrimary)
-            Text("Buscando \"\(viewModel.searchText)\"…")
-                .font(.subheadline)
-                .foregroundStyle(Color.kusiTextSecondary)
+    /// Result count line and rows with the shape of `searchActivityRow`.
+    private var searchingSkeleton: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            SkeletonBlock(width: 200, height: 12, cornerRadius: 4)
+                .padding(.vertical, 4)
+            ForEach(0..<5, id: \.self) { _ in
+                HStack(spacing: 12) {
+                    SkeletonBlock(width: 80, height: 70, cornerRadius: 8)
+                    VStack(alignment: .leading, spacing: 8) {
+                        SkeletonBlock(height: 13, cornerRadius: 5)
+                        SkeletonBlock(width: 120, height: 10, cornerRadius: 4)
+                        SkeletonBlock(width: 80, height: 13, cornerRadius: 5)
+                    }
+                }
+                .padding(12)
+                .kusiCard()
+            }
         }
-        .frame(maxWidth: .infinity)
-        .padding(.top, 40)
+        .padding(16)
+        .kusiShimmer()
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Buscando \(viewModel.searchText)")
     }
 
     // MARK: - Results
@@ -162,15 +192,9 @@ struct SearchView: View {
 
     private func searchActivityRow(_ activity: ActivityUI) -> some View {
         HStack(spacing: 12) {
-            AsyncImage(url: URL(string: activity.primaryImageURL)) { phase in
-                switch phase {
-                case .success(let image): image.resizable().aspectRatio(contentMode: .fill)
-                default: Color.kusiBorder
-                }
-            }
-            .frame(width: 80, height: 70)
-            .clipped()
-            .clipShape(RoundedRectangle(cornerRadius: 8))
+            RemoteImage(url: activity.primaryImageURL)
+                .frame(width: 80, height: 70)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(activity.title)
