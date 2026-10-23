@@ -357,7 +357,7 @@ Tocar ♥ → SwiftData (al instante, @Query redibuja todas las vistas) → .fav
 | Access y refresh token | **Keychain** | Datos sensibles: cifrados por el sistema y sin copia en backups a otros dispositivos |
 | Último perfil del usuario (`UserDTO`) | **Keychain** (`KeychainUserCache`) | Permite abrir la app sin esperar a `/auth/me`. Se borra al cerrar sesión |
 | Favoritos | **SwiftData** (`FavoriteModel`, `@Attribute(.unique) activityId`) | Lectura instantánea y offline. `@Query` hace reactiva la UI |
-| Fotos del catálogo | **Memoria** (`NSCache`, 100 MB) y **disco** (`URLCache`, 200 MB) en `RemoteImageLoader` | Una foto ya vista aparece al instante, también tras reabrir la app. Varias vistas que piden la misma foto comparten una sola descarga, y esa descarga sigue aunque la vista se redibuje |
+| Fotos del catálogo | **Memoria** (`NSCache`, 250 MB, fotos reducidas a 720 px en su lado corto) y **disco** (`URLCache`, 200 MB) en `RemoteImageLoader` | Una foto ya vista aparece al instante, también tras reabrir la app. Varias vistas que piden la misma foto comparten una sola descarga, y esa descarga sigue aunque la vista se redibuje |
 | Todo lo demás (catálogo, reservas, perfil) | API | Siempre fresco; no se cachea |
 
 Dev y Prod tienen bundle IDs distintos, así que cada app tiene su propio Keychain y su propia base SwiftData.
