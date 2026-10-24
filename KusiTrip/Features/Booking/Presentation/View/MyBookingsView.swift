@@ -7,17 +7,20 @@ struct MyBookingsView: View {
     var body: some View {
         Group {
             if viewModel.isLoading {
-                ProgressView()
-                    .tint(Color.kusiTextPrimary)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                loadingSkeleton
+                    .transition(.opacity)
             } else if let error = viewModel.errorMessage, viewModel.bookings.isEmpty {
                 ErrorStateView(message: error) { await viewModel.load() }
+                    .transition(.opacity)
             } else if viewModel.bookings.isEmpty {
                 emptyState
+                    .transition(.opacity)
             } else {
                 list
+                    .transition(.opacity)
             }
         }
+        .animation(.easeInOut(duration: 0.35), value: viewModel.isLoading)
         .background(Color.kusiBackground)
         .navigationTitle("Mis reservas")
         .navigationBarTitleDisplayMode(.inline)
@@ -52,6 +55,40 @@ struct MyBookingsView: View {
                 }
         }
         .listStyle(.plain)
+    }
+
+    /// Rows with the shape of `BookingRow`, laid out like the plain List.
+    private var loadingSkeleton: some View {
+        // A ScrollView, like the List, so the rows start below the navigation bar.
+        ScrollView {
+            skeletonRows
+        }
+        .scrollDisabled(true)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Cargando reservas")
+    }
+
+    private var skeletonRows: some View {
+        VStack(spacing: 0) {
+            ForEach(0..<6, id: \.self) { _ in
+                HStack(spacing: 12) {
+                    SkeletonBlock(width: 72, height: 72, cornerRadius: 10)
+                    VStack(alignment: .leading, spacing: 8) {
+                        SkeletonBlock(height: 13, cornerRadius: 5)
+                        SkeletonBlock(width: 130, height: 10, cornerRadius: 4)
+                        HStack {
+                            SkeletonBlock(width: 110, height: 9, cornerRadius: 4)
+                            Spacer()
+                            SkeletonBlock(width: 60, height: 12, cornerRadius: 4)
+                        }
+                    }
+                }
+                .padding(.horizontal, 20)
+                .padding(.vertical, 12)
+                Divider().padding(.leading, 20)
+            }
+        }
+        .kusiShimmer()
     }
 
     private var emptyState: some View {

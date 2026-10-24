@@ -3,7 +3,7 @@ import SwiftUI
 struct ActivityCard: View {
     static let width: CGFloat = 248
     private static let imageHeight: CGFloat = 160
-    private static let height: CGFloat = 348
+    static let height: CGFloat = 348
 
     let activity: ActivityUI
     var isFavorited: Bool = false

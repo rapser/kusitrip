@@ -8,6 +8,7 @@ final class SearchViewModel {
     var resultDestinations: [DestinationUI] = []
     var featuredDestinations: [DestinationUI] = []
     var isSearching: Bool = false
+    var isLoadingSuggestions: Bool = true
     var hasSearched: Bool = false
     var errorMessage: String?
 
@@ -27,6 +28,7 @@ final class SearchViewModel {
 
     func loadSuggestions() async {
         guard featuredDestinations.isEmpty else { return }
+        defer { isLoadingSuggestions = false }
         let destinations = (try? await destinationsUseCase.execute()) ?? []
         featuredDestinations = destinations.prefix(4).map { DestinationMapper.toUI(entity: $0) }
     }

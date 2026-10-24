@@ -14,15 +14,17 @@ struct ActivityDetailView: View {
     var body: some View {
         Group {
             if viewModel.isLoading {
-                ProgressView()
-                    .tint(Color.kusiTextPrimary)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                ActivityDetailSkeletonView()
+                    .transition(.opacity)
             } else if let activity = viewModel.activity {
                 content(activity)
+                    .transition(.opacity)
             } else if let error = viewModel.errorMessage {
                 ErrorStateView(message: error) { await viewModel.load(activityId: activityId) }
+                    .transition(.opacity)
             }
         }
+        .animation(.easeInOut(duration: 0.35), value: viewModel.isLoading)
         .background(Color.kusiBackground)
         .task { await viewModel.load(activityId: activityId) }
         .navigationBarTitleDisplayMode(.inline)

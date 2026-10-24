@@ -8,6 +8,8 @@ App iOS de visitas guiadas y excursiones en español por Perú y Sudamérica: Cu
 - **SwiftData** para favoritos offline y **Keychain** para la sesión
 - Backend: [kusitrip-api-rest](https://github.com/rapser/kusitrip-api-rest) (NestJS + Prisma + PostgreSQL en Supabase, desplegado en Render)
 
+Versión actual: **1.0.0 (build 2)**. Los cambios de cada versión están en el [CHANGELOG](CHANGELOG.md).
+
 ## Contenido
 
 1. [Requisitos](#requisitos)
@@ -22,7 +24,8 @@ App iOS de visitas guiadas y excursiones en español por Perú y Sudamérica: Cu
 10. [Principios SOLID](#principios-solid)
 11. [Design System](#design-system)
 12. [Ambientes](#ambientes)
-13. [Pendientes conocidos](#pendientes-conocidos)
+13. [Versiones y TestFlight](#versiones-y-testflight)
+14. [Pendientes conocidos](#pendientes-conocidos)
 
 ---
 
@@ -70,9 +73,27 @@ npm run start:dev
 
 Espera a ver `Nest application successfully started`. Luego, en Xcode, elige **KusiTrip-Dev** y pulsa Run.
 
-**Para apagar:** `Ctrl + C` en la Terminal 2 (API) y luego en la Terminal 1 (base). Los datos se conservan para la próxima vez.
-
 **Si la app Dev muestra un error de conexión,** revisa que las dos Terminales sigan abiertas y sin errores. Puedes comprobarlo abriendo http://localhost:3000/health en el navegador.
+
+#### Apagar la base y el API
+
+Encendidos y sin uso consumen poco (unos 65 MB de RAM entre los dos y 0% de CPU), pero puedes apagarlos cuando no estés probando Dev. Los datos se conservan para la próxima vez.
+
+- **Si tienes las Terminales abiertas:** `Ctrl + C` en la Terminal 2 (API) y luego en la Terminal 1 (base).
+- **Si cerraste las Terminales o no sabes dónde quedaron corriendo**, desde cualquier Terminal:
+
+  ```bash
+  lsof -ti :3000 -sTCP:LISTEN | xargs kill   # el API
+  pkill -INT -f "pglite-server"              # la base
+  ```
+
+Para saber si siguen encendidos:
+
+```bash
+lsof -nP -iTCP:3000,55432 -sTCP:LISTEN   # sin resultados = apagados
+```
+
+Para volver a encenderlos, repite los dos comandos de arriba (`npm run db:local` y `npm run start:dev`).
 
 #### Si es la primera vez en esta Mac
 
@@ -126,7 +147,7 @@ Detalles en [Capa de red → NetworkLogger](#networklogger).
 | **Login** | Iniciar sesión con email y contraseña. Ir a registro | `POST /auth/login` |
 | **Registro** | Crear cuenta (nombre, apellido, email, contraseña ≥ 8 caracteres y su confirmación). Entra directo a la app | `POST /auth/register` |
 | **Splash** | Si hay sesión guardada, entra directo a las pestañas (~1 s) y valida la sesión en segundo plano | `GET /auth/me` |
-| **Inicio** | Ver categorías, principales destinos y carrusel de actividades destacadas. Marcar favoritos. Deslizar hacia abajo para recargar | `GET /home` |
+| **Inicio** | Ver categorías, principales destinos y carrusel de actividades destacadas. Marcar favoritos. Deslizar hacia abajo para recargar. Al deslizar, la foto de portada se convierte en la barra de navegación, y vuelve a aparecer al subir | `GET /home` |
 | **Destinos** | Listar destinos, filtrar por país con chips y buscar por nombre o país | `GET /destinations` |
 | **Detalle de destino** | Ver las actividades del destino y filtrarlas por categoría. Marcar favoritos | `GET /destinations/:id`, `GET /destinations/:id/activities` |
 | **Detalle de actividad** | Galería de fotos, valoración, duración, idioma, punto de encuentro, qué incluye, cancelación gratuita, opiniones y actividades relacionadas. Marcar favorito. Botón **Reservar** | `GET /activities/:id`, `/related`, `/reviews` |
@@ -357,6 +378,7 @@ Tocar ♥ → SwiftData (al instante, @Query redibuja todas las vistas) → .fav
 | Access y refresh token | **Keychain** | Datos sensibles: cifrados por el sistema y sin copia en backups a otros dispositivos |
 | Último perfil del usuario (`UserDTO`) | **Keychain** (`KeychainUserCache`) | Permite abrir la app sin esperar a `/auth/me`. Se borra al cerrar sesión |
 | Favoritos | **SwiftData** (`FavoriteModel`, `@Attribute(.unique) activityId`) | Lectura instantánea y offline. `@Query` hace reactiva la UI |
+| Fotos del catálogo | **Memoria** (`NSCache`, 250 MB, fotos reducidas a 720 px en su lado corto) y **disco** (`URLCache`, 200 MB) en `RemoteImageLoader` | Una foto ya vista aparece al instante, también tras reabrir la app. Varias vistas que piden la misma foto comparten una sola descarga, y esa descarga sigue aunque la vista se redibuje |
 | Todo lo demás (catálogo, reservas, perfil) | API | Siempre fresco; no se cachea |
 
 Dev y Prod tienen bundle IDs distintos, así que cada app tiene su propio Keychain y su propia base SwiftData.
@@ -385,10 +407,11 @@ Componentes reutilizables en [`DesignSystem/Components`](KusiTrip/DesignSystem/C
 |---|---|
 | `ActivityCard` | Tarjeta de actividad para carruseles: foto, categoría, título, valoración, precio y favorito. Tamaño fijo (248 × 348) para que las tarjetas no se superpongan |
 | `DestinationCard` | Tarjeta de destino con foto y número de actividades |
-| `RemoteImage` | `AsyncImage` con placeholder y recorte correcto |
+| `RemoteImage` | Foto remota con recorte correcto. Mientras descarga muestra un bloque con brillo, la foto aparece con un fundido y, si falla, reintenta dos veces (a 1 s y 3 s) antes de mostrar el ícono de "sin foto". Descarga con `RemoteImageLoader` |
 | `CategoryChipView`, `SearchFieldView`, `StarRatingView`, `PriceTagView`, `PrimaryButton`, `KusiScreenHeader` | Piezas de UI comunes |
 | `ErrorStateView` | Mensaje de error con botón **Reintentar** (async) |
 | `KusiLoadingOverlay` | Loader a pantalla completa: fondo difuminado, logo con anillo animado en los colores de la marca y mensaje. Se usa con `.kusiLoadingOverlay(isPresented:message:)`, bloquea los toques y queda visible al menos 700 ms para no parpadear. Respeta *Reducir movimiento* |
+| `SkeletonBlock` + `.kusiShimmer()` | Skeleton de carga: bloques grises con la forma del contenido y un brillo que los recorre. `.kusiShimmer()` se aplica una vez al contenedor para que el brillo vaya sincronizado. Lo usan todas las pantallas que cargan contenido del API: Inicio, Destinos, Detalle de destino, Detalle de actividad, Mis reservas y Buscar. Login, Registro y Reserva son acciones y usan `KusiLoadingOverlay`. Respeta *Reducir movimiento* |
 
 Paleta en `Color+KusiTrip.swift`: `kusiPrimary` (amarillo `#FFC53D`), `kusiAccent` (naranja `#FF6B3D`), `kusiTextPrimary` (azul noche `#1B2A49`), además de fondo, superficie, bordes y rojo de descuento. Modificador `.kusiCard()` para tarjetas con fondo, esquinas y sombra.
 
@@ -405,6 +428,29 @@ Paleta en `Color+KusiTrip.swift`: `kusiPrimary` (amarillo `#FFC53D`), `kusiAccen
 - Los valores de cada ambiente están en [`Configuration/Dev.xcconfig`](Configuration/Dev.xcconfig) y [`Configuration/Prod.xcconfig`](Configuration/Prod.xcconfig): URL del API, bundle ID, nombre visible e ícono. `API_BASE_URL` llega al código vía `Kusi-Info.plist`. Para agregar un ambiente (por ejemplo QA), se crea otro `.xcconfig` con su configuración y su scheme.
 - Render (plan Free) se duerme sin uso: la primera petición puede tardar hasta ~2 min.
 - En un iPhone físico, `localhost` es el propio teléfono: para Dev cambia `API_BASE_URL` en `Dev.xcconfig` por la IP de tu Mac (por ejemplo `http:/$()/192.168.1.20:3000`; el `$()` evita que `//` se lea como comentario).
+
+---
+
+## Versiones y TestFlight
+
+La versión y el build están en el proyecto, en las cuatro configuraciones (`Debug`, `Release`, `Debug-Dev` y `Release-Dev`):
+
+| Ajuste | Qué es | Valor actual |
+|---|---|---|
+| `MARKETING_VERSION` | Versión que ve el usuario en la App Store | `1.0.0` |
+| `CURRENT_PROJECT_VERSION` | Número de build. Cada subida a App Store Connect necesita uno distinto | `2` |
+
+Para publicar una versión nueva:
+
+1. Anota los cambios en el [CHANGELOG](CHANGELOG.md): pasa lo que esté en *Sin publicar* a una sección con la versión, el build y la fecha.
+2. Sube `MARKETING_VERSION` si hay cambios visibles para el usuario, siguiendo *Semantic Versioning*:
+   - Corrección: `1.0.0` → `1.0.1`.
+   - Funcionalidad nueva: `1.0.0` → `1.1.0`.
+   - Cambio grande: `1.0.0` → `2.0.0`.
+3. Sube `CURRENT_PROJECT_VERSION` por encima del último build de esa versión en App Store Connect. App Store Connect rechaza un build repetido. Si al distribuir dejas activada *Manage Version and Build Number*, Xcode lo ajusta solo.
+4. Archiva con el scheme **KusiTrip** (**Product → Archive**) y súbelo desde el Organizer.
+
+`Kusi-Info.plist` declara `ITSAppUsesNonExemptEncryption = false`. La app solo usa HTTPS y el Keychain, que son la encriptación del sistema, así que App Store Connect no pide la documentación de exportación en cada build.
 
 ---
 

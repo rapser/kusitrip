@@ -6,7 +6,8 @@ final class ActivityDetailViewModel {
     var activity: ActivityUI?
     var relatedActivities: [ActivityUI] = []
     var reviews: [ReviewUI] = []
-    var isLoading: Bool = false
+    // True from the start, so the first frame already shows the skeleton.
+    var isLoading: Bool = true
     var errorMessage: String?
     var isDescriptionExpanded: Bool = false
     var currentImageIndex: Int = 0

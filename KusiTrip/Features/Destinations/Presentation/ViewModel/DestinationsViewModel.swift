@@ -9,7 +9,8 @@ final class DestinationsViewModel {
     var filteredDestinations: [DestinationUI] = []
     var searchText: String = "" { didSet { applyFilters() } }
     var selectedCountry: String = DestinationsViewModel.allCountries { didSet { applyFilters() } }
-    var isLoading: Bool = false
+    // True from the start, so the first frame already shows the skeleton.
+    var isLoading: Bool = true
     var errorMessage: String?
 
     /// Country chips built from the catalog, in the order the API returns destinations.

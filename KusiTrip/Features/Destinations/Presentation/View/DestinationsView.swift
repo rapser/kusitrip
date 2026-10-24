@@ -36,27 +36,63 @@ struct DestinationsView: View {
                             .clipShape(Capsule())
                             .overlay(Capsule().stroke(viewModel.selectedCountry == country ? Color.kusiPrimary : Color.kusiBorder))
                         }
+                        // The country chips come from the catalog: placeholders until it loads.
+                        if viewModel.isLoading {
+                            HStack(spacing: 10) {
+                                ForEach([72, 88, 64], id: \.self) { width in
+                                    SkeletonBlock(width: CGFloat(width), height: 36, cornerRadius: 18)
+                                }
+                            }
+                            .kusiShimmer()
+                            .transition(.opacity)
+                        }
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 12)
                 }
 
-                if viewModel.isLoading {
-                    ProgressView()
-                        .scaleEffect(1.4)
-                        .tint(Color.kusiTextPrimary)
-                        .frame(maxWidth: .infinity)
-                        .padding(.top, 60)
-                } else if let error = viewModel.errorMessage {
-                    ErrorStateView(message: error) { await viewModel.load() }
-                } else if viewModel.filteredDestinations.isEmpty {
-                    emptyState
-                } else {
-                    destinationCount
-                    destinationsGrid
+                Group {
+                    if viewModel.isLoading {
+                        loadingSkeleton
+                            .transition(.opacity)
+                    } else if let error = viewModel.errorMessage {
+                        ErrorStateView(message: error) { await viewModel.load() }
+                            .transition(.opacity)
+                    } else if viewModel.filteredDestinations.isEmpty {
+                        emptyState
+                    } else {
+                        VStack(alignment: .leading, spacing: 0) {
+                            destinationCount
+                            destinationsGrid
+                        }
+                        .transition(.opacity)
+                    }
                 }
+                .animation(.easeInOut(duration: 0.35), value: viewModel.isLoading)
             }
         }
+    }
+
+    private var loadingSkeleton: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            SkeletonBlock(width: 140, height: 12, cornerRadius: 4)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 10)
+            LazyVGrid(
+                columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)],
+                spacing: 12
+            ) {
+                ForEach(0..<6, id: \.self) { _ in
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .fill(Color.kusiBorder.opacity(0.55))
+                        .aspectRatio(4 / 5, contentMode: .fit)
+                }
+            }
+            .padding(.horizontal, 16)
+        }
+        .kusiShimmer()
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Cargando destinos")
     }
 
     private var destinationCount: some View {
